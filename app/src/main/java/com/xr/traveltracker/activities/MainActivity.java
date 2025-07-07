@@ -13,7 +13,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.xr.traveltracker.R;
 import com.xr.traveltracker.fragments.AddFragment;
 import com.xr.traveltracker.fragments.HomeFragment;
-import com.xr.traveltracker.fragments.MapFragment;
 import com.xr.traveltracker.fragments.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -82,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
         int itemId = item.getItemId();
         if (itemId == R.id.nav_home) {
             return new HomeFragment();
-        } else if (itemId == R.id.nav_map) {
-            return new MapFragment();
         } else if (itemId == R.id.nav_add) {
             return new AddFragment();
         } else if (itemId == R.id.nav_profile) {
