@@ -6,4 +6,27 @@
     <color name="colorPrimaryDark">#33a3dc</color>
     <color name="colorAccent">#abc88b</color>
     <color name="textColor">#212121</color>
+
+        <!-- ===== 背景色 ===== -->
+        <color name="light_gray_background">#FAFAFA</color> <!-- 页面背景 -->
+        <color name="card_background">#FFFFFF</color>      <!-- 卡片背景 -->
+
+        <!-- ===== 文字色 ===== -->
+        <color name="text_primary">#212121</color>         <!-- 主要文字 -->
+        <color name="text_secondary">#757575</color>       <!-- 次要文字 -->
+        <color name="text_hint">#BDBDBD</color>           <!-- 提示文字 -->
+        <color name="text_on_primary">#FFFFFF</color>      <!-- 主题色上的文字 -->
+
+        <!-- ===== 功能色 ===== -->
+        <color name="search_box_bg">#1E88E5</color>       <!-- 搜索框背景（浅蓝） -->
+        <color name="divider">#E0E0E0</color>             <!-- 分割线 -->
+        <color name="error_red">#E53935</color>           <!-- 错误提示 -->
+
+        <!-- ===== Banner 指示器 ===== -->
+        <color name="banner_indicator_selected">#3F51B5</color>
+        <color name="banner_indicator_normal">#BDBDBD</color>
+
+        <!-- ===== 按钮状态色 ===== -->
+        <color name="button_pressed">#1E88E5</color>      <!-- 按下状态 -->
+        <color name="button_normal">#3F51B5</color>       <!-- 默认状态 -->
 </resources>
