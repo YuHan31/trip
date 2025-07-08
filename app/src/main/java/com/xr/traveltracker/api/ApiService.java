@@ -3,18 +3,27 @@ package com.xr.traveltracker.api;
 
 import com.xr.traveltracker.models.LoginRequest;
 import com.xr.traveltracker.models.LoginResponse;
+import com.xr.traveltracker.models.MediaResponse;
 import com.xr.traveltracker.models.RegisterRequest;
 import com.xr.traveltracker.models.RegisterResponse;
+import com.xr.traveltracker.models.TravelRecord;
+import com.xr.traveltracker.models.TravelRequest;
+import com.xr.traveltracker.models.TravelResponse;
 import com.xr.traveltracker.models.UpdateProfileRequest;
 import com.xr.traveltracker.models.UpdateProfileResponse;
 import com.xr.traveltracker.models.UserDetailsResponse;
 
+import java.util.List;
+
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface ApiService {
@@ -29,4 +38,26 @@ public interface ApiService {
 
     @PUT("api/users/update")
     Call<UpdateProfileResponse> updateProfile(@Header("Authorization") String token, @Body UpdateProfileRequest request);
+
+    // 添加旅行记录
+    @POST("api/travel")
+    Call<TravelResponse> createTravelRecord(
+            @Header("Authorization") String token,
+            @Body TravelRequest request
+    );
+
+    // 上传媒体文件
+    @Multipart
+    @POST("api/travel/{travelId}/media")
+    Call<MediaResponse> uploadMedia(
+            @Header("Authorization") String token,
+            @Path("travelId") int travelId,
+            @Part MultipartBody.Part file
+    );
+
+    @GET("api/travel/user/{userId}")
+    Call<List<TravelRecord>> getUserTravelRecords(
+            @Header("Authorization") String token,
+            @Path("userId") String userId
+    );
 }

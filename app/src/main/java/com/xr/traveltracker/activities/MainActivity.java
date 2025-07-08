@@ -144,7 +144,13 @@ public class MainActivity extends AppCompatActivity {
         if (itemId == R.id.nav_home) {
             return new HomeFragment();
         } else if (itemId == R.id.nav_add) {
-            return new AddFragment();
+            AddFragment fragment = new AddFragment();
+            Bundle args = new Bundle();
+            args.putString("userId", getIntent().getStringExtra("userId"));
+            args.putString("username", getIntent().getStringExtra("username"));
+            args.putString("token", getIntent().getStringExtra("token"));
+            fragment.setArguments(args);
+            return fragment;
         } else if (itemId == R.id.nav_profile) {
             // 如果是ProfileFragment，检查是否需要传递参数
             if (getIntent().hasExtra("userId")) {
