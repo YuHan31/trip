@@ -20,7 +20,7 @@ public interface ApiService {
     @POST("api/users/login")
     Call<LoginResponse> loginUser(@Body LoginRequest loginRequest);
 
-    @POST("api/users")
+    @POST("api/users/register")
     Call<RegisterResponse> registerUser(@Body RegisterRequest registerRequest);
 
     @GET("api/users/{userId}")

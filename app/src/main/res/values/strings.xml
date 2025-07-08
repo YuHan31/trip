@@ -8,4 +8,6 @@
     <string name="map">地图</string>
     <string name="add">添加</string>
     <string name="profile">我的</string>
+
+    <string name="base_url">http://10.12.8.211:3000/</string>
 </resources>

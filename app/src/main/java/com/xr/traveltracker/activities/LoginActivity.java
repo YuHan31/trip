@@ -13,8 +13,6 @@ import com.xr.traveltracker.R;
 import com.xr.traveltracker.api.ApiService;
 import com.xr.traveltracker.models.LoginRequest;
 import com.xr.traveltracker.models.LoginResponse;
-import com.xr.traveltracker.models.RegisterRequest;
-import com.xr.traveltracker.models.RegisterResponse;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -62,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void login(String username, String password) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.10.1.92:3000/") // 注意去掉了末尾的空格
+                .baseUrl(getString(R.string.base_url)) // 使用字符串资源
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

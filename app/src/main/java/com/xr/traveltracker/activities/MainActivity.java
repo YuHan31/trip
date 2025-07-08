@@ -17,7 +17,7 @@ import com.xr.traveltracker.fragments.HomeFragment;
 import com.xr.traveltracker.fragments.ProfileFragment;
 
 import android.media.MediaPlayer;
-import android.widget.Button;
+
 
 
 
@@ -50,9 +50,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             initBottomNavigation(savedInstanceState);
         }
-        // 初始化底部导航
-        initBottomNavigation(savedInstanceState);
-
     }
 
     private void loadInitialProfileFragment() {

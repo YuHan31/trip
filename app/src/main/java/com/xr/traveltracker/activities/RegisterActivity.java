@@ -65,10 +65,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void register(String username, String password, String email) {
         // 确保服务器地址是正确的字符串格式
-        String baseUrl = "http://10.10.1.92:3000/";
-
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl) // 使用正确的服务器地址
+                .baseUrl(getString(R.string.base_url)) // 使用字符串资源
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

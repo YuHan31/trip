@@ -90,7 +90,7 @@ public class ProfileFragment extends Fragment {
         Log.d("ProfileFragment", "开始加载用户详情，userId: " + userId);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.10.1.92:3000/")
+                .baseUrl(getString(R.string.base_url)) // 使用字符串资源
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
