@@ -31,9 +31,26 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         container = findViewById(R.id.container);
 
-        // 初始化底部导航
-        initBottomNavigation(savedInstanceState);
+        // 检查Intent是否要求显示ProfileFragment
+        boolean showProfile = getIntent().getBooleanExtra("showProfile", false);
+        if (showProfile) {
+            // 直接显示ProfileFragment并传递用户信息
+            ProfileFragment profileFragment = new ProfileFragment();
+            Bundle args = new Bundle();
+            args.putString("userId", getIntent().getStringExtra("userId"));
+            args.putString("username", getIntent().getStringExtra("username"));
+            args.putString("token", getIntent().getStringExtra("token"));
+            profileFragment.setArguments(args);
+
+            currentFragment = profileFragment;
+            loadFragment(profileFragment);
+            bottomNavigationView.setSelectedItemId(R.id.nav_profile);
+        } else {
+            // 正常初始化
+            initBottomNavigation(savedInstanceState);
+        }
     }
+
 
     private void initBottomNavigation(Bundle savedInstanceState) {
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);

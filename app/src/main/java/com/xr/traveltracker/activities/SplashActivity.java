@@ -2,15 +2,19 @@ package com.xr.traveltracker.activities;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.xr.traveltracker.R;
+
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -24,7 +28,7 @@ public class SplashActivity extends AppCompatActivity {
         final LinearLayout textContainer = findViewById(R.id.text_container);
 
         // 初始设置
-        textContainer.setTranslationY(20f); // 初始下移20像素
+        textContainer.setTranslationY(20f);
 
         // 文字浮现动画
         welcomeText.animate()
@@ -45,15 +49,15 @@ public class SplashActivity extends AppCompatActivity {
                 "translationY",
                 60f, -60f, 40f, -40f, 20f, -20f, 10f, -10f, 0f
         );
-        waveAnimator.setDuration(6000); // 延长到6秒
-        waveAnimator.setInterpolator(new LinearInterpolator()); // 线性插值器使运动更均匀
+        waveAnimator.setDuration(6000);
+        waveAnimator.setInterpolator(new LinearInterpolator());
         waveAnimator.start();
 
-        // 3秒后跳转到主页面
+        // 3.5秒后跳转到登录页面
         new Handler().postDelayed(() -> {
-            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            startActivity(new Intent(SplashActivity.this, LoginActivity.class));
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
-        }, 3500); // 延长总时间以匹配动画
+        }, 3500);
     }
 }
