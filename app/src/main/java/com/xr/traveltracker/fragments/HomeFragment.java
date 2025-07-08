@@ -1,95 +1,110 @@
 package com.xr.traveltracker.fragments;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import androidx.viewpager2.widget.ViewPager2;
 import com.xr.traveltracker.R;
-import com.xr.traveltracker.adapters.TripMemoryAdapter;
-import com.xr.traveltracker.adapters.UpcomingTripAdapter;
-import com.xr.traveltracker.models.Trip;
-import com.xr.traveltracker.models.TripMemory;
-
+import com.xr.traveltracker.adapters.MyPagerAdapter;
+import com.xr.traveltracker.adapters.MyRecyclerViewAdapter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
-//    private TextView greetingText;
-//    private TextView statsText;
-//    private RecyclerView upcomingTripsRecyclerView;
-//    private RecyclerView memoriesRecyclerView;
-//    private AuthManager authManager;
-//    private TripDatabase tripDatabase;
-//
-//    @Override
-//    public void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        authManager = new AuthManager(requireContext());
-//        tripDatabase = TripDatabase.getInstance(requireContext());
-//    }
-//
-//    @Nullable
-//    @Override
-//    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//        View view = inflater.inflate(R.layout.fragment_home_travel_log, container, false);
-//
-//        greetingText = view.findViewById(R.id.greeting_text);
-//        statsText = view.findViewById(R.id.stats_text);
-//        upcomingTripsRecyclerView = view.findViewById(R.id.upcoming_trips_recycler);
-//        memoriesRecyclerView = view.findViewById(R.id.memories_recycler);
-//
-//        // 根据当前用户显示个性化信息
-//        displayPersonalizedContent();
-//
-//        return view;
-//    }
-//
-//    private void displayPersonalizedContent() {
-//        int userId = authManager.getCurrentUserId();
-//        String username = authManager.getCurrentUsername();
-//
-//        // 设置个性化欢迎语
-//        greetingText.setText(String.format("欢迎回来，%s！", username));
-//
-//        // 从数据库获取用户特定的数据
-//        new Thread(() -> {
-//            // 获取统计数据
-//            int tripCount = tripDatabase.tripDao().getTripCount(userId);
-//            int cityCount = tripDatabase.tripDao().getVisitedCityCount(userId);
-//            int totalDays = tripDatabase.tripDao().getTotalTravelDays(userId);
-//
-//            // 获取即将到来的旅行
-//            List<Trip> upcomingTrips = tripDatabase.tripDao().getUpcomingTrips(userId, System.currentTimeMillis());
-//
-//            // 获取旅行回忆
-//            List<TripMemory> memories = tripDatabase.tripDao().getPastTrips(userId, System.currentTimeMillis());
-//
-//            // 更新UI必须在主线程
-//            requireActivity().runOnUiThread(() -> {
-//                // 设置统计信息
-//                statsText.setText(String.format(
-//                        "已记录旅行: %d次\n去过城市: %d个\n旅行天数: %d天",
-//                        tripCount, cityCount, totalDays
-//                ));
-//
-//                // 设置即将到来的旅行
-//                UpcomingTripAdapter upcomingAdapter = new UpcomingTripAdapter(requireContext(), upcomingTrips);
-//                upcomingTripsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-//                upcomingTripsRecyclerView.setAdapter(upcomingAdapter);
-//
-//                // 设置旅行回忆
-//                TripMemoryAdapter memoryAdapter = new TripMemoryAdapter(requireContext(), memories);
-//                memoriesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-//                memoriesRecyclerView.setAdapter(memoryAdapter);
-//            });
-//        }).start();
-//    }
+
+    private ViewPager2 viewPager;
+    private RecyclerView recyclerView;
+    private List<Integer> images = Arrays.asList(
+            R.drawable.ic_foreground1,
+            R.drawable.ic_foreground2,
+            R.drawable.ic_foreground3
+    );
+    private List<String> dynamicContent = Arrays.asList("Content 1", "Content 2", "Content 3");
+
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable runnable;
+    private final int delay = 3000; // 轮播间隔时间（毫秒）
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_home, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        viewPager = view.findViewById(R.id.viewPager);
+        recyclerView = view.findViewById(R.id.recyclerView);
+
+        // 复制图片列表以实现无缝循环
+        List<Integer> duplicatedImages = new ArrayList<>();
+        duplicatedImages.addAll(images);
+        duplicatedImages.addAll(images);
+        duplicatedImages.addAll(images);
+
+        // Setup ViewPager2 with images
+        viewPager.setAdapter(new MyPagerAdapter(duplicatedImages));
+        viewPager.setOffscreenPageLimit(3); // 设置缓存页面数量
+        viewPager.setUserInputEnabled(true); // 启用手动滑动
+
+        // 设置页面切换监听器
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                // 当滑动到最后一张图片时，自动跳转到第一张
+                if (position == duplicatedImages.size() - 1) {
+                    viewPager.setCurrentItem(0, false);
+                }
+            }
+        });
+
+        // 启动自动轮播
+        startAutoSlide();
+
+        // Setup RecyclerView with dynamic content
+        recyclerView.setAdapter(new MyRecyclerViewAdapter(dynamicContent));
+    }
+
+    private void startAutoSlide() {
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                int currentItem = viewPager.getCurrentItem();
+                int totalItems = viewPager.getAdapter().getItemCount();
+                int nextPage = (currentItem + 1) % totalItems;
+
+                // 如果当前页是最后一张，跳转到第一张
+                if (nextPage == 0) {
+                    viewPager.setCurrentItem(nextPage, false);
+                } else {
+                    viewPager.setCurrentItem(nextPage, true);
+                }
+
+                handler.postDelayed(this, delay);
+            }
+        };
+        handler.postDelayed(runnable, delay);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        handler.removeCallbacks(runnable); // 停止自动轮播
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        handler.postDelayed(runnable, delay); // 恢复自动轮播
+    }
 }
