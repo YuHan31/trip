@@ -9,5 +9,5 @@
     <string name="add">添加</string>
     <string name="profile">我的</string>
 
-    <string name="base_url">http://10.12.8.211:3000/</string>
+    <string name="base_url">http://192.168.1.21:3000/</string>
 </resources>

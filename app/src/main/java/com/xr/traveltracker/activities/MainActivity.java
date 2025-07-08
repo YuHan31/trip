@@ -3,7 +3,9 @@ package com.xr.traveltracker.activities;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,9 +19,7 @@ import com.xr.traveltracker.fragments.HomeFragment;
 import com.xr.traveltracker.fragments.ProfileFragment;
 
 import android.media.MediaPlayer;
-
-
-
+import android.animation.ObjectAnimator;
 
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private static final long CLICK_DELAY = 500; // 防抖延迟时间(毫秒)
     private DatabaseHelper dbHelper;
     private MediaPlayer mediaPlayer;
+    private ImageButton musicControlButton;
+    private ObjectAnimator animator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +41,29 @@ public class MainActivity extends AppCompatActivity {
         // 初始化视图
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         container = findViewById(R.id.container);
+        musicControlButton = findViewById(R.id.btn_music_control); // 获取播放按钮
         dbHelper = new DatabaseHelper(this); // 初始化数据库帮助类
         dbHelper.insertTravel("Paris", "2024-07-26", "Visited the Eiffel Tower");
+
+        // 初始化音乐播放器
+        initializeMediaPlayer();
+
+        // 初始化旋转动画
+        animator = ObjectAnimator.ofFloat(musicControlButton, "rotation", 0f, 360f);
+        animator.setDuration(1000); // 旋转一圈的时间
+        animator.setRepeatCount(ObjectAnimator.INFINITE); // 无限循环
+        animator.setRepeatMode(ObjectAnimator.RESTART);
+
+        // 设置播放按钮的点击事件
+        musicControlButton.setOnClickListener(v -> {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+                animator.pause(); // 暂停动画
+            } else {
+                mediaPlayer.start();
+                animator.resume(); // 恢复动画
+            }
+        });
 
         // 检查是否需要初始显示ProfileFragment
         boolean showProfile = getIntent().getBooleanExtra("showProfile", false);
@@ -156,5 +179,28 @@ public class MainActivity extends AppCompatActivity {
         }
         // 保存选中的导航项
         outState.putInt("selectedItem", bottomNavigationView.getSelectedItemId());
+    }
+
+    private void initializeMediaPlayer() {
+        mediaPlayer = MediaPlayer.create(this, R.raw.music);
+        if (mediaPlayer != null) {
+            mediaPlayer.setLooping(true);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+        if (animator != null) {
+            animator.cancel();
+            animator = null;
+        }
     }
 }

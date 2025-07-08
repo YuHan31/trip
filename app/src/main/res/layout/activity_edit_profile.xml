@@ -3,36 +3,59 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/background_login"> <!-- 添加背景图片 -->
 
+    <!-- 大标题 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="旅行随心记"
+        android:textSize="32sp"
+        android:textColor="#00BCD4"
+        android:fontFamily="sans-serif-black"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="48dp" />
+
+    <!-- 邮箱标签 -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="邮箱:"
         android:textSize="18sp"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp" />
 
+    <!-- 邮箱输入框 -->
     <EditText
         android:id="@+id/et_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
-        android:layout_marginBottom="16dp"/>
+        android:padding="8dp"
+        android:textColor="#000000"
+        android:textColorHint="#808080"
+        android:layout_marginBottom="16dp" />
 
+    <!-- 密码标签 -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="密码:"
         android:textSize="18sp"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp" />
 
+    <!-- 密码输入框 -->
     <EditText
         android:id="@+id/et_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
+        android:padding="8dp"
+        android:textColor="#000000"
+        android:textColorHint="#808080"
         android:layout_marginBottom="24dp" />
 
+    <!-- 按钮布局 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,20 +63,23 @@
         android:weightSum="2"
         android:layout_marginTop="8dp">
 
+        <!-- 取消按钮 -->
         <Button
             android:id="@+id/btn_cancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="取消"
+            android:textColor="#FFFFFF"
             android:layout_marginEnd="8dp" />
 
+        <!-- 保存修改按钮 -->
         <Button
             android:id="@+id/btn_save"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="保存修改" />
+            android:text="保存修改"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
-
 </LinearLayout>

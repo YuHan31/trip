@@ -2,10 +2,11 @@ package com.xr.traveltracker.fragments;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -22,7 +23,6 @@ public class HomeFragment extends Fragment {
 
     private ViewPager2 viewPager;
     private RecyclerView recyclerView;
-    private Button musicControlButton;
     private List<Integer> images = Arrays.asList(
             R.drawable.ic_foreground1,
             R.drawable.ic_foreground2,
@@ -30,6 +30,12 @@ public class HomeFragment extends Fragment {
     );
     private List<String> dynamicContent = Arrays.asList("Content 1", "Content 2", "Content 3");
     private MediaPlayer mediaPlayer;
+    private boolean isUserPlaying = false;
+
+    // 自动播放相关变量
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable runnable;
+    private static final int AUTO_PLAY_DELAY = 3000; // 自动播放间隔时间（毫秒）
 
     @Nullable
     @Override
@@ -38,21 +44,9 @@ public class HomeFragment extends Fragment {
 
         viewPager = view.findViewById(R.id.viewPager);
         recyclerView = view.findViewById(R.id.recyclerView);
-        musicControlButton = view.findViewById(R.id.musicControlButton);
 
         // 初始化音乐播放器
         initializeMediaPlayer();
-
-        // 设置音乐控制按钮的点击事件
-        musicControlButton.setOnClickListener(v -> {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.pause();
-                musicControlButton.setText("Play");
-            } else {
-                mediaPlayer.start();
-                musicControlButton.setText("Pause");
-            }
-        });
 
         // 复制图片列表以实现无缝循环
         List<Integer> duplicatedImages = new ArrayList<>();
@@ -64,14 +58,16 @@ public class HomeFragment extends Fragment {
         viewPager.setAdapter(new MyPagerAdapter(duplicatedImages));
         recyclerView.setAdapter(new MyRecyclerViewAdapter(dynamicContent));
 
+        // 启动自动播放
+        startAutoPlay();
+
         return view;
     }
 
     private void initializeMediaPlayer() {
         mediaPlayer = MediaPlayer.create(getContext(), R.raw.music);
         if (mediaPlayer != null) {
-            mediaPlayer.setLooping(true); // 设置为循环播放
-            mediaPlayer.start(); // 开始播放音乐
+            mediaPlayer.setLooping(true);
         }
     }
 
@@ -85,6 +81,8 @@ public class HomeFragment extends Fragment {
             mediaPlayer.release();
             mediaPlayer = null;
         }
+        // 停止自动播放
+        stopAutoPlay();
     }
 
     @Override
@@ -93,13 +91,42 @@ public class HomeFragment extends Fragment {
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
         }
+        // 暂停自动播放
+        stopAutoPlay();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mediaPlayer != null) {
+        if (mediaPlayer != null && isUserPlaying) { // 只有用户之前播放了音乐，才会自动播放
             mediaPlayer.start();
+        }
+        // 恢复自动播放
+        startAutoPlay();
+    }
+
+    private void startAutoPlay() {
+        if (runnable == null) {
+            runnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (viewPager != null) {
+                        int currentItem = viewPager.getCurrentItem();
+                        int totalItems = viewPager.getAdapter().getItemCount();
+                        int nextItem = (currentItem + 1) % totalItems;
+                        viewPager.setCurrentItem(nextItem, true);
+                    }
+                    handler.postDelayed(this, AUTO_PLAY_DELAY);
+                }
+            };
+            handler.postDelayed(runnable, AUTO_PLAY_DELAY);
+        }
+    }
+
+    private void stopAutoPlay() {
+        if (runnable != null) {
+            handler.removeCallbacks(runnable);
+            runnable = null;
         }
     }
 }
