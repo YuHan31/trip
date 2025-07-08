@@ -1,11 +1,11 @@
 package com.xr.traveltracker.fragments;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -22,29 +22,37 @@ public class HomeFragment extends Fragment {
 
     private ViewPager2 viewPager;
     private RecyclerView recyclerView;
+    private Button musicControlButton;
     private List<Integer> images = Arrays.asList(
             R.drawable.ic_foreground1,
             R.drawable.ic_foreground2,
             R.drawable.ic_foreground3
     );
     private List<String> dynamicContent = Arrays.asList("Content 1", "Content 2", "Content 3");
-
-    private Handler handler = new Handler(Looper.getMainLooper());
-    private Runnable runnable;
-    private final int delay = 3000; // 轮播间隔时间（毫秒）
+    private MediaPlayer mediaPlayer;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         viewPager = view.findViewById(R.id.viewPager);
         recyclerView = view.findViewById(R.id.recyclerView);
+        musicControlButton = view.findViewById(R.id.musicControlButton);
+
+        // 初始化音乐播放器
+        initializeMediaPlayer();
+
+        // 设置音乐控制按钮的点击事件
+        musicControlButton.setOnClickListener(v -> {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+                musicControlButton.setText("Play");
+            } else {
+                mediaPlayer.start();
+                musicControlButton.setText("Pause");
+            }
+        });
 
         // 复制图片列表以实现无缝循环
         List<Integer> duplicatedImages = new ArrayList<>();
@@ -52,59 +60,46 @@ public class HomeFragment extends Fragment {
         duplicatedImages.addAll(images);
         duplicatedImages.addAll(images);
 
-        // Setup ViewPager2 with images
+        // 设置ViewPager2和RecyclerView的适配器
         viewPager.setAdapter(new MyPagerAdapter(duplicatedImages));
-        viewPager.setOffscreenPageLimit(3); // 设置缓存页面数量
-        viewPager.setUserInputEnabled(true); // 启用手动滑动
-
-        // 设置页面切换监听器
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                // 当滑动到最后一张图片时，自动跳转到第一张
-                if (position == duplicatedImages.size() - 1) {
-                    viewPager.setCurrentItem(0, false);
-                }
-            }
-        });
-
-        // 启动自动轮播
-        startAutoSlide();
-
-        // Setup RecyclerView with dynamic content
         recyclerView.setAdapter(new MyRecyclerViewAdapter(dynamicContent));
+
+        return view;
     }
 
-    private void startAutoSlide() {
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                int currentItem = viewPager.getCurrentItem();
-                int totalItems = viewPager.getAdapter().getItemCount();
-                int nextPage = (currentItem + 1) % totalItems;
+    private void initializeMediaPlayer() {
+        mediaPlayer = MediaPlayer.create(getContext(), R.raw.music);
+        if (mediaPlayer != null) {
+            mediaPlayer.setLooping(true); // 设置为循环播放
+            mediaPlayer.start(); // 开始播放音乐
+        }
+    }
 
-                // 如果当前页是最后一张，跳转到第一张
-                if (nextPage == 0) {
-                    viewPager.setCurrentItem(nextPage, false);
-                } else {
-                    viewPager.setCurrentItem(nextPage, true);
-                }
-
-                handler.postDelayed(this, delay);
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
             }
-        };
-        handler.postDelayed(runnable, delay);
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        handler.removeCallbacks(runnable); // 停止自动轮播
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        handler.postDelayed(runnable, delay); // 恢复自动轮播
+        if (mediaPlayer != null) {
+            mediaPlayer.start();
+        }
     }
 }
