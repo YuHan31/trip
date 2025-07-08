@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.xr.traveltracker.R;
+import com.xr.traveltracker.database.DatabaseHelper;
 import com.xr.traveltracker.fragments.AddFragment;
 import com.xr.traveltracker.fragments.HomeFragment;
 import com.xr.traveltracker.fragments.ProfileFragment;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private Fragment currentFragment;
     private long lastClickTime = 0;
     private static final long CLICK_DELAY = 500; // 防抖延迟时间(毫秒)
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
         // 初始化视图
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         container = findViewById(R.id.container);
+        dbHelper = new DatabaseHelper(this); // 初始化数据库帮助类
+        dbHelper.insertTravel("Paris", "2024-07-26", "Visited the Eiffel Tower");
 
         // 初始化底部导航
         initBottomNavigation(savedInstanceState);
