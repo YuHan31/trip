@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout container;
     private Fragment currentFragment;
     private long lastClickTime = 0;
-    private static final long CLICK_DELAY = 500;
     private boolean isInitialProfileLoad = false;
     private static final long CLICK_DELAY = 500; // 防抖延迟时间(毫秒)
     private DatabaseHelper dbHelper;
