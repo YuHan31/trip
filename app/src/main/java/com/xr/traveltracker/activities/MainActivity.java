@@ -16,6 +16,11 @@ import com.xr.traveltracker.fragments.AddFragment;
 import com.xr.traveltracker.fragments.HomeFragment;
 import com.xr.traveltracker.fragments.ProfileFragment;
 
+import android.media.MediaPlayer;
+import android.widget.Button;
+
+
+
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private FrameLayout container;
@@ -24,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isInitialProfileLoad = false;
     private static final long CLICK_DELAY = 500; // 防抖延迟时间(毫秒)
     private DatabaseHelper dbHelper;
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             initBottomNavigation(savedInstanceState);
         }
+        // 初始化底部导航
+        initBottomNavigation(savedInstanceState);
+
     }
 
     private void loadInitialProfileFragment() {
