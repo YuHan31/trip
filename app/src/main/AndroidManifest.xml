@@ -40,6 +40,8 @@
 
         <activity android:name=".activities.EditProfileActivity" />
 
+
+
         <!-- 其他Activity -->
         <!-- <activity-->
         <!--     android:name=".activities.AddTravelActivity"-->

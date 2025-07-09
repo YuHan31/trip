@@ -7,14 +7,16 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.card.MaterialCardView;
 import com.xr.traveltracker.R;
 import com.xr.traveltracker.adapters.MyPagerAdapter;
 import com.xr.traveltracker.adapters.MyRecyclerViewAdapter;
@@ -42,7 +44,7 @@ public class HomeFragment extends Fragment {
     private Runnable runnable;
     private static final int AUTO_PLAY_DELAY = 3000; // 自动播放间隔时间（毫秒）
 
-    private Button btnViewRecords;
+    private MaterialCardView cardViewRecords;
     private String token;
     private String userId;
 
@@ -53,7 +55,7 @@ public class HomeFragment extends Fragment {
 
         viewPager = view.findViewById(R.id.viewPager);
         recyclerView = view.findViewById(R.id.recyclerView);
-        btnViewRecords = view.findViewById(R.id.btnViewRecords);
+        cardViewRecords = view.findViewById(R.id.cardViewRecords);
 
         // 初始化音乐播放器
         initializeMediaPlayer();
@@ -78,12 +80,19 @@ public class HomeFragment extends Fragment {
             userId = args.getString("userId");
         }
 
-        // 设置按钮点击事件
-        btnViewRecords.setOnClickListener(v -> navigateToTravelRecords());
+        // 设置卡片点击事件
+        cardViewRecords.setOnClickListener(v -> {
+            // 添加点击效果
+            cardViewRecords.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100)
+                    .withEndAction(() -> cardViewRecords.animate().scaleX(1f).scaleY(1f).setDuration(100));
+
+            navigateToTravelRecords();
+        });
 
         return view;
     }
 
+    // 其他方法保持不变...
     private void initializeMediaPlayer() {
         mediaPlayer = MediaPlayer.create(getContext(), R.raw.music);
         if (mediaPlayer != null) {

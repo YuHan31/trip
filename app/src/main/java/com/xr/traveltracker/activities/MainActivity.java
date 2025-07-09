@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
     private ImageButton musicControlButton;
     private ObjectAnimator animator;
+    private EditText etDestination, etStartDate, etEndDate, etDescription, etBudget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             initBottomNavigation(savedInstanceState);
         }
+
     }
 
     private void loadInitialProfileFragment() {
@@ -215,4 +218,5 @@ public class MainActivity extends AppCompatActivity {
             animator = null;
         }
     }
+
 }

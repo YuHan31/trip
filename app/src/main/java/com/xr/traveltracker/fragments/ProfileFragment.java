@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.xr.traveltracker.R;
 import com.xr.traveltracker.activities.EditProfileActivity;
+import com.xr.traveltracker.activities.LoginActivity;
 import com.xr.traveltracker.api.ApiService;
 import com.xr.traveltracker.models.UserDetailsResponse;
 
@@ -37,6 +38,7 @@ public class ProfileFragment extends Fragment {
     private TextView tvUsername;
     private TextView tvEmail;
     private Button btnEditProfile;
+    private Button btnLogout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class ProfileFragment extends Fragment {
         tvUsername = view.findViewById(R.id.tv_username);
         tvEmail = view.findViewById(R.id.tv_email);
         btnEditProfile = view.findViewById(R.id.btn_edit_profile);
+        btnLogout = view.findViewById(R.id.btn_logout);
 
         // 显示当前用户信息
         tvUsername.setText(username);
@@ -68,6 +71,27 @@ public class ProfileFragment extends Fragment {
             intent.putExtra("username", username);
             intent.putExtra("token", token);
             startActivityForResult(intent, EDIT_PROFILE_REQUEST_CODE);
+        });
+
+        // 退出登录按钮点击事件
+        btnLogout.setOnClickListener(v -> {
+            // 清除用户信息或执行退出登录逻辑
+            // 例如，清除SharedPreferences中的用户信息
+            // SharedPreferences preferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+            // SharedPreferences.Editor editor = preferences.edit();
+            // editor.remove("token");
+            // editor.remove("userId");
+            // editor.remove("username");
+            // editor.apply();
+
+            // 提示用户已退出登录
+            Toast.makeText(getContext(), "已退出登录", Toast.LENGTH_SHORT).show();
+
+            // 跳转到登录页面或其他页面
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            getActivity().finish();
         });
 
         // 加载用户详细信息

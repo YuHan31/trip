@@ -2,85 +2,106 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/background_main">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="添加旅行日志"
-            android:textSize="20sp"
+            android:textSize="48sp"
             android:textStyle="bold"
-            android:layout_marginBottom="16dp"/>
+            android:gravity="center"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/opensans" />
 
+        <!-- 目的地输入框 -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/destination_input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:hint="目的地">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_destination"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="目的地"/>
+                android:inputType="text"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- 开始日期输入框 -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/start_date_input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:hint="开始日期">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_start_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="开始日期"
                 android:inputType="none"
                 android:focusable="false"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- 结束日期输入框 -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/end_date_input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:hint="结束日期">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_end_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="结束日期"
                 android:inputType="none"
                 android:focusable="false"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- 描述输入框 -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/description_input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:hint="描述">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="描述"
                 android:inputType="textMultiLine"
                 android:minLines="3"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- 预算输入框 -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/budget_input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            android:hint="预算">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_budget"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="预算"
                 android:inputType="numberDecimal"/>
         </com.google.android.material.textfield.TextInputLayout>
 

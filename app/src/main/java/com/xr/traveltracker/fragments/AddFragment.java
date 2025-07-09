@@ -10,13 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.xr.traveltracker.R;
 import com.xr.traveltracker.api.ApiService;
 import com.xr.traveltracker.models.MediaResponse;
@@ -42,22 +43,21 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AddFragment extends Fragment {
-    private EditText etDestination, etStartDate, etEndDate, etDescription, etBudget;
+    private TextInputEditText etDestination, etStartDate, etEndDate, etDescription, etBudget;
     private Button btnSubmit;
     private ImageButton btnAddPhoto;
     private String token;
-    private String userId; // 添加userId字段声明
+    private String userId;
     private List<Uri> selectedImages = new ArrayList<>();
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add, container, false);
 
-        // 获取从MainActivity传递的参数
         Bundle args = getArguments();
         if (args != null) {
             token = args.getString("token");
-            userId = args.getString("userId"); // 直接获取userId
+            userId = args.getString("userId");
         }
 
         initViews(view);
@@ -78,12 +78,11 @@ public class AddFragment extends Fragment {
     }
 
     private void setupDatePickers() {
-        // 设置日期选择器
         etStartDate.setOnClickListener(v -> showDatePicker(etStartDate));
         etEndDate.setOnClickListener(v -> showDatePicker(etEndDate));
     }
 
-    private void showDatePicker(EditText editText) {
+    private void showDatePicker(TextInputEditText editText) {
         Calendar calendar = Calendar.getInstance();
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 getContext(),
@@ -93,8 +92,7 @@ public class AddFragment extends Fragment {
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-        );
+                calendar.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.show();
     }
 
@@ -109,26 +107,24 @@ public class AddFragment extends Fragment {
     }
 
     private boolean validateInput() {
-        String destination = etDestination.getText().toString();
-        String startDate = etStartDate.getText().toString();
-        String endDate = etEndDate.getText().toString();
+        boolean isValid = true;
 
-        if (destination.isEmpty()) {
+        if (etDestination.getText().toString().isEmpty()) {
             etDestination.setError("请输入目的地");
-            return false;
+            isValid = false;
         }
 
-        if (startDate.isEmpty()) {
+        if (etStartDate.getText().toString().isEmpty()) {
             etStartDate.setError("请选择开始日期");
-            return false;
+            isValid = false;
         }
 
-        if (endDate.isEmpty()) {
+        if (etEndDate.getText().toString().isEmpty()) {
             etEndDate.setError("请选择结束日期");
-            return false;
+            isValid = false;
         }
 
-        return true;
+        return isValid;
     }
 
     private void createTravelRecord() {
@@ -151,10 +147,9 @@ public class AddFragment extends Fragment {
                 .enqueue(new Callback<TravelResponse>() {
                     @Override
                     public void onResponse(Call<TravelResponse> call, Response<TravelResponse> response) {
-                        if (response.isSuccessful()) {
+                        if (response.isSuccessful() && response.body() != null) {
                             TravelResponse travelResponse = response.body();
 
-                            // 如果有图片，上传图片
                             if (!selectedImages.isEmpty()) {
                                 uploadMedia(travelResponse.getTravelId(), () -> {
                                     navigateToSuccessPage(travelResponse.getTravelId());
@@ -162,6 +157,8 @@ public class AddFragment extends Fragment {
                             } else {
                                 navigateToSuccessPage(travelResponse.getTravelId());
                             }
+                        } else {
+                            Toast.makeText(getContext(), "创建旅行记录失败", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -176,12 +173,11 @@ public class AddFragment extends Fragment {
         SuccessFragment fragment = new SuccessFragment();
         Bundle args = new Bundle();
         args.putString("token", token);
-        // 直接使用从参数中获取的userId，不再从token解析
         if (userId == null || userId.isEmpty()) {
             Toast.makeText(getContext(), "无法获取用户ID", Toast.LENGTH_SHORT).show();
             return;
         }
-        args.putString("userId", userId); //
+        args.putString("userId", userId);
         fragment.setArguments(args);
 
         requireActivity().getSupportFragmentManager().beginTransaction()
@@ -191,14 +187,13 @@ public class AddFragment extends Fragment {
     }
 
     private void uploadMedia(int travelId, Runnable onComplete) {
-        // 计数器跟踪上传完成情况
         AtomicInteger uploadCount = new AtomicInteger(0);
         int totalImages = selectedImages.size();
 
         for (Uri imageUri : selectedImages) {
             try {
-                InputStream inputStream = getContext().getContentResolver().openInputStream(imageUri);
-                File file = new File(getContext().getCacheDir(), "temp_image_" + System.currentTimeMillis() + ".jpg");
+                InputStream inputStream = requireContext().getContentResolver().openInputStream(imageUri);
+                File file = new File(requireContext().getCacheDir(), "temp_image_" + System.currentTimeMillis() + ".jpg");
                 FileOutputStream outputStream = new FileOutputStream(file);
                 byte[] buffer = new byte[1024];
                 int length;
@@ -222,21 +217,13 @@ public class AddFragment extends Fragment {
                         .enqueue(new Callback<MediaResponse>() {
                             @Override
                             public void onResponse(Call<MediaResponse> call, Response<MediaResponse> response) {
-                                if (response.isSuccessful()) {
-                                    if (uploadCount.incrementAndGet() == totalImages) {
-                                        onComplete.run(); // 所有图片上传完成后执行回调
-                                    }
-                                } else {
-                                    // 即使单个失败也继续
-                                    if (uploadCount.incrementAndGet() == totalImages) {
-                                        onComplete.run();
-                                    }
+                                if (uploadCount.incrementAndGet() == totalImages) {
+                                    onComplete.run();
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<MediaResponse> call, Throwable t) {
-                                // 即使失败也继续
                                 if (uploadCount.incrementAndGet() == totalImages) {
                                     onComplete.run();
                                 }
@@ -245,14 +232,12 @@ public class AddFragment extends Fragment {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                // 即使异常也继续
                 if (uploadCount.incrementAndGet() == totalImages) {
                     onComplete.run();
                 }
             }
         }
 
-        // 如果没有图片，立即回调
         if (totalImages == 0) {
             onComplete.run();
         }
@@ -272,18 +257,15 @@ public class AddFragment extends Fragment {
 
         if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
             if (data.getClipData() != null) {
-                // 多选图片
                 int count = data.getClipData().getItemCount();
                 for (int i = 0; i < count; i++) {
                     Uri imageUri = data.getClipData().getItemAt(i).getUri();
                     selectedImages.add(imageUri);
                 }
             } else if (data.getData() != null) {
-                // 单选图片
                 Uri imageUri = data.getData();
                 selectedImages.add(imageUri);
             }
-
             Toast.makeText(getContext(), "已选择 " + selectedImages.size() + " 张图片", Toast.LENGTH_SHORT).show();
         }
     }

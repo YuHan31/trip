@@ -1,24 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@drawable/background_main"
     android:gravity="center"
-    android:padding="32dp">
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- 顶部图片 -->
+
+    <!-- 成功消息 -->
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="24dp"
+        android:contentDescription="旅行成功图标"
+        android:src="@drawable/ic_success_travel" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
         android:text="添加旅行成功啦，快去看看你的足迹吧！"
-        android:textSize="18sp"
         android:textAlignment="center"
-        android:layout_marginBottom="32dp"/>
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
 
-    <Button
-        android:id="@+id/btn_view_records"
+    <!-- 卡片式按钮 -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="查看我的旅行记录"
-        android:paddingStart="32dp"
-        android:paddingEnd="32dp"/>
+        android:layout_margin="8dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="4dp"
+        app:strokeColor="@color/colorPrimary"
+        app:strokeWidth="1dp">
+
+        <Button
+            android:id="@+id/btn_view_records"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:drawablePadding="8dp"
+            android:drawableTint="@color/colorPrimary"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:text="查看我的旅行记录"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+    </com.google.android.material.card.MaterialCardView>
+
 </LinearLayout>
