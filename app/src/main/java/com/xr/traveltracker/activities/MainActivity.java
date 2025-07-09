@@ -142,7 +142,13 @@ public class MainActivity extends AppCompatActivity {
     private Fragment getFragmentForMenuItem(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.nav_home) {
-            return new HomeFragment();
+            HomeFragment fragment=new HomeFragment();
+            Bundle args = new Bundle();
+            args.putString("userId", getIntent().getStringExtra("userId"));
+            args.putString("username", getIntent().getStringExtra("username"));
+            args.putString("token", getIntent().getStringExtra("token"));
+            fragment.setArguments(args);
+            return fragment;
         } else if (itemId == R.id.nav_add) {
             AddFragment fragment = new AddFragment();
             Bundle args = new Bundle();

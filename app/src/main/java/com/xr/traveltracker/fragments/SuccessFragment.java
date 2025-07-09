@@ -13,7 +13,7 @@ import com.xr.traveltracker.R;
 public class SuccessFragment extends Fragment {
     private Button btnViewRecords;
     private String token;
-    private String  userId; // 保持为int类型
+    private String  userId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,7 +35,7 @@ public class SuccessFragment extends Fragment {
         TravelRecordsFragment fragment = new TravelRecordsFragment();
         Bundle args = new Bundle();
         args.putString("token", token);
-        args.putString("userId", userId); // 传递int类型的userId
+        args.putString("userId", userId);
         fragment.setArguments(args);
 
         requireActivity().getSupportFragmentManager().beginTransaction()

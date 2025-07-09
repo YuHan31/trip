@@ -7,14 +7,19 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
+
 import com.xr.traveltracker.R;
 import com.xr.traveltracker.adapters.MyPagerAdapter;
 import com.xr.traveltracker.adapters.MyRecyclerViewAdapter;
+import com.xr.traveltracker.fragments.TravelRecordsFragment;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,6 +42,10 @@ public class HomeFragment extends Fragment {
     private Runnable runnable;
     private static final int AUTO_PLAY_DELAY = 3000; // 自动播放间隔时间（毫秒）
 
+    private Button btnViewRecords;
+    private String token;
+    private String userId;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -44,6 +53,7 @@ public class HomeFragment extends Fragment {
 
         viewPager = view.findViewById(R.id.viewPager);
         recyclerView = view.findViewById(R.id.recyclerView);
+        btnViewRecords = view.findViewById(R.id.btnViewRecords);
 
         // 初始化音乐播放器
         initializeMediaPlayer();
@@ -60,6 +70,16 @@ public class HomeFragment extends Fragment {
 
         // 启动自动播放
         startAutoPlay();
+
+        // 获取传递的参数
+        Bundle args = getArguments();
+        if (args != null) {
+            token = args.getString("token");
+            userId = args.getString("userId");
+        }
+
+        // 设置按钮点击事件
+        btnViewRecords.setOnClickListener(v -> navigateToTravelRecords());
 
         return view;
     }
@@ -90,6 +110,9 @@ public class HomeFragment extends Fragment {
         super.onPause();
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
+            isUserPlaying = true; // 保存播放状态
+        } else {
+            isUserPlaying = false;
         }
         // 暂停自动播放
         stopAutoPlay();
@@ -128,5 +151,18 @@ public class HomeFragment extends Fragment {
             handler.removeCallbacks(runnable);
             runnable = null;
         }
+    }
+
+    private void navigateToTravelRecords() {
+        TravelRecordsFragment fragment = new TravelRecordsFragment();
+        Bundle args = new Bundle();
+        args.putString("token", token);
+        args.putString("userId", userId);
+        fragment.setArguments(args);
+
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

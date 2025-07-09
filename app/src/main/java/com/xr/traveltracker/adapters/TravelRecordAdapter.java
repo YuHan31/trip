@@ -1,5 +1,6 @@
 package com.xr.traveltracker.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.xr.traveltracker.R;
 import com.xr.traveltracker.models.TravelRecord;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class TravelRecordAdapter extends RecyclerView.Adapter<TravelRecordAdapter.ViewHolder> {
     private List<TravelRecord> travelRecords;
@@ -32,7 +35,23 @@ public class TravelRecordAdapter extends RecyclerView.Adapter<TravelRecordAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         TravelRecord record = travelRecords.get(position);
         holder.tvDestination.setText(record.getDestination());
-        holder.tvDate.setText(record.getStartDate() + " 至 " + record.getEndDate());
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String startDateStr = "未设置";
+        String endDateStr = "未设置";
+
+        try {
+            if (record.getStartDate() != null) {
+                startDateStr = dateFormat.format(record.getStartDate());
+            }
+            if (record.getEndDate() != null) {
+                endDateStr = dateFormat.format(record.getEndDate());
+            }
+        } catch (Exception e) {
+            Log.e("TravelRecordAdapter", "Date formatting error", e);
+        }
+
+        holder.tvDate.setText(startDateStr + " 至 " + endDateStr);
         holder.tvDescription.setText(record.getDescription());
     }
 
