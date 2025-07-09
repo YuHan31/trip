@@ -5,12 +5,31 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_main">
 
-    <!-- 内容容器 -->
+    <!-- 全局Toolbar容器（默认显示） -->
+    <FrameLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:layout_marginTop="20dp"> <!-- 添加顶部外边距，数值可根据需要调整 -->
+
+        <!-- 全局Toolbar（无返回键） -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:title="@string/app_name"
+            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+            android:paddingHorizontal="16dp"/>
+    </FrameLayout>
+
+    <!-- 内容容器（调整位置到Toolbar下方） -->
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottom_navigation"
+        android:layout_below="@id/toolbar_container"
+        android:layout_above="@id/bottom_navigation"
         android:layout_marginBottom="5dp" />
 
     <!-- 圆形图片视图 -->

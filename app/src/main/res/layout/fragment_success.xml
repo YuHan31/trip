@@ -28,7 +28,7 @@
         android:textSize="18sp"
         android:textStyle="bold"/>
 
-    <!-- 卡片式按钮 -->
+    <!-- 卡片式按钮 - 查看记录 -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,6 +48,31 @@
             android:paddingStart="32dp"
             android:paddingEnd="32dp"
             android:text="查看我的旅行记录"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- 卡片式按钮 - 返回主页 -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="4dp"
+        app:strokeColor="@color/colorPrimary"
+        app:strokeWidth="1dp">
+
+        <Button
+            android:id="@+id/btn_back_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:drawablePadding="8dp"
+            android:drawableTint="@color/colorPrimary"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:text="返回主页"
             android:textColor="@color/colorPrimary"
             android:textSize="16sp"
             android:textStyle="bold"/>

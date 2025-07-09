@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.xr.traveltracker.R;
 import com.xr.traveltracker.database.DatabaseHelper;
@@ -34,11 +35,15 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton musicControlButton;
     private ObjectAnimator animator;
     private EditText etDestination, etStartDate, etEndDate, etDescription, etBudget;
+    private MaterialToolbar mainToolbar; // 全局Toolbar
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 初始化Toolbar
+        initializeToolbar();
 
         // 初始化视图
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -75,7 +80,31 @@ public class MainActivity extends AppCompatActivity {
         } else {
             initBottomNavigation(savedInstanceState);
         }
+    }
 
+    private void initializeToolbar() {
+        mainToolbar = findViewById(R.id.toolbar_main);
+        setSupportActionBar(mainToolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false); // 默认隐藏返回键
+        }
+    }
+
+    // 提供给Fragment调用的方法，用于切换到带返回键的Toolbar
+    public void showBackToolbar() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            mainToolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+            mainToolbar.setNavigationOnClickListener(v -> onBackPressed());
+        }
+    }
+
+    // 恢复全局Toolbar（无返回键）
+    public void restoreMainToolbar() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            mainToolbar.setNavigationIcon(null);
+        }
     }
 
     private void loadInitialProfileFragment() {
@@ -133,6 +162,8 @@ public class MainActivity extends AppCompatActivity {
                 if (selectedFragment != null && !isSameFragment(currentFragment, selectedFragment)) {
                     currentFragment = selectedFragment;
                     loadFragment(selectedFragment);
+                    // 切换Fragment时恢复主Toolbar
+                    restoreMainToolbar();
                 }
                 return true;
             };
@@ -145,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
     private Fragment getFragmentForMenuItem(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.nav_home) {
-            HomeFragment fragment=new HomeFragment();
+            HomeFragment fragment = new HomeFragment();
             Bundle args = new Bundle();
             args.putString("userId", getIntent().getStringExtra("userId"));
             args.putString("username", getIntent().getStringExtra("username"));
@@ -219,4 +250,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    // 在MainActivity中添加这个方法
+    public void selectBottomNavItem(int itemId) {
+        if (bottomNavigationView != null) {
+            bottomNavigationView.setSelectedItemId(itemId);
+        }
+    }
 }

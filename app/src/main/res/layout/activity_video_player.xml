@@ -4,11 +4,40 @@
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <!-- 顶部空白区域 -->
+    <!-- 顶部工具栏 -->
+    <RelativeLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:paddingHorizontal="16dp"
+        android:layout_marginTop="20dp">
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="返回"
+            android:src="@drawable/ic_arrow_back" />
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <!-- 顶部空白区域（现在在Toolbar下方） -->
     <View
         android:id="@+id/topSpacer"
         android:layout_width="match_parent"
-        android:layout_height="80dp" /> <!-- 控制整体下移距离 -->
+        android:layout_height="50dp"
+        android:layout_below="@id/toolbar" />
 
     <!-- 整个内容容器 -->
     <RelativeLayout
@@ -16,52 +45,18 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/topSpacer">
 
-        <!-- 顶部工具栏 -->
-
         <!-- 视频播放器 -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:layout_below="@id/toolbar"
             android:layout_marginTop="16dp">
 
             <VideoView
                 android:id="@+id/videoView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            android:paddingHorizontal="16dp">
-
-            <ImageButton
-                android:id="@+id/btn_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="返回"
-                android:src="@drawable/ic_arrow_back" />
-
-            <TextView
-                android:id="@+id/titleTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
         </RelativeLayout>
 
         <!-- 视频描述 -->
-
     </RelativeLayout>
-
 </RelativeLayout>

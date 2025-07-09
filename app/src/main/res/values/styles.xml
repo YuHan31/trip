@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- 基础应用主题 -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <!-- 修改基础应用主题为NoActionBar -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <!-- Splash屏幕主题 -->
-    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
-        <!-- 全屏设置 -->
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <!-- 禁用系统状态栏 -->
-        <item name="android:windowTranslucentStatus">true</item>
-        <!-- 禁用进入/退出动画 -->
-        <item name="android:windowAnimationStyle">@null</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar">
+        <!-- 确保以下属性设置为false -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <!-- Splash屏幕主题保持不变 -->
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
 </resources>

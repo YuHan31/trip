@@ -33,6 +33,8 @@ public class VideosFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_videos, container, false);
 
+        setupToolbarWithBackButton();
+
         Bundle args = getArguments();
         if (args != null) {
             token = args.getString("token");
@@ -51,6 +53,22 @@ public class VideosFragment extends Fragment {
         videoRecyclerView.setAdapter(videoAdapter);
 
         return view;
+    }
+
+    private void setupToolbarWithBackButton() {
+        // 确保Activity是我们的MainActivity
+        if (getActivity() instanceof com.xr.traveltracker.activities.MainActivity) {
+            ((com.xr.traveltracker.activities.MainActivity) getActivity()).showBackToolbar();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // 恢复默认Toolbar
+        if (getActivity() instanceof com.xr.traveltracker.activities.MainActivity) {
+            ((com.xr.traveltracker.activities.MainActivity) getActivity()).restoreMainToolbar();
+        }
     }
 
     private List<VideoItem> getSampleVideos() {

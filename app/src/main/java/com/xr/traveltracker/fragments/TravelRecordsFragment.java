@@ -48,6 +48,9 @@ public class TravelRecordsFragment extends Fragment implements TravelRecordAdapt
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_trip_list, container, false);
 
+        // 设置带返回键的Toolbar
+        setupToolbarWithBackButton();
+
         Bundle args = getArguments();
         if (args != null) {
             token = args.getString("token");
@@ -62,6 +65,22 @@ public class TravelRecordsFragment extends Fragment implements TravelRecordAdapt
         loadTravelRecords();
 
         return view;
+    }
+
+    private void setupToolbarWithBackButton() {
+        // 确保Activity是我们的MainActivity
+        if (getActivity() instanceof com.xr.traveltracker.activities.MainActivity) {
+            ((com.xr.traveltracker.activities.MainActivity) getActivity()).showBackToolbar();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // 恢复默认Toolbar
+        if (getActivity() instanceof com.xr.traveltracker.activities.MainActivity) {
+            ((com.xr.traveltracker.activities.MainActivity) getActivity()).restoreMainToolbar();
+        }
     }
 
     @Override
