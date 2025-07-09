@@ -1,8 +1,8 @@
 package com.xr.traveltracker.activities;
 
 import android.graphics.drawable.Drawable;
+
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -19,10 +20,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.material.card.MaterialCardView;
 import com.xr.traveltracker.R;
 import com.xr.traveltracker.api.ApiService;
 import com.xr.traveltracker.models.TravelMedia;
 import com.xr.traveltracker.models.TravelRecord;
+import com.xr.traveltracker.utils.NetworkUtils;
+
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -36,7 +40,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class TravelDetailActivity extends AppCompatActivity {
 
-    private static final String TAG = "TravelDetailActivity";
     private String token;
     private int travelId;
 
@@ -45,35 +48,36 @@ public class TravelDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_travel_detail);
 
+        // 检查网络连接
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            Toast.makeText(this, "网络不可用，请检查连接", Toast.LENGTH_LONG).show();
+        }
         // 获取传递的参数
         travelId = getIntent().getIntExtra("travel_id", -1);
         token = getIntent().getStringExtra("token");
 
         if (travelId == -1 || token == null) {
-            Log.e(TAG, "未接收到必要的参数");
+            Toast.makeText(this, "参数错误", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        // 初始化返回按钮
-        ImageButton btnBack = findViewById(R.id.btn_back);
-        btnBack.setOnClickListener(v -> finish());
-
-        // 初始化视图
-        TextView tvDestination = findViewById(R.id.tv_detail_destination);
-        TextView tvDateRange = findViewById(R.id.tv_detail_date_range);
-        TextView tvDescription = findViewById(R.id.tv_detail_description);
-        TextView tvBudget = findViewById(R.id.tv_detail_budget);
-        LinearLayout mediaContainer = findViewById(R.id.media_container);
-        mediaContainer.setVisibility(View.VISIBLE);
-
-        // 加载旅行记录详情
-        loadTravelRecordDetails(tvDestination, tvDateRange, tvDescription, tvBudget, mediaContainer);
+        initializeViews();
+        loadTravelRecordDetails();
     }
 
-    private void loadTravelRecordDetails(TextView tvDestination, TextView tvDateRange,
-                                         TextView tvDescription, TextView tvBudget,
-                                         LinearLayout mediaContainer) {
+    private void initializeViews() {
+        // 初始化返回按钮
+        ImageButton btnBack = findViewById(R.id.btn_back);
+        btnBack.setOnClickListener(v -> supportFinishAfterTransition());
+
+        // 设置状态栏颜色
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+    }
+
+    private void loadTravelRecordDetails() {
+        showLoading(true);
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.base_url))
                 .addConverterFactory(GsonConverterFactory.create())
@@ -85,62 +89,69 @@ public class TravelDetailActivity extends AppCompatActivity {
                 .enqueue(new Callback<TravelRecord>() {
                     @Override
                     public void onResponse(Call<TravelRecord> call, Response<TravelRecord> response) {
+                        showLoading(false);
+
                         if (response.isSuccessful() && response.body() != null) {
-                            TravelRecord record = response.body();
-                            displayRecordDetails(record, tvDestination, tvDateRange,
-                                    tvDescription, tvBudget, mediaContainer);
+                            displayRecordDetails(response.body());
                         } else {
-                            Log.e(TAG, "获取详情失败: " + response.code());
-                            Toast.makeText(TravelDetailActivity.this,
-                                    "获取详情失败", Toast.LENGTH_SHORT).show();
+                            showError("获取详情失败");
                         }
                     }
 
                     @Override
                     public void onFailure(Call<TravelRecord> call, Throwable t) {
-                        Log.e(TAG, "网络请求失败", t);
-                        Toast.makeText(TravelDetailActivity.this,
-                                "网络错误: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        showLoading(false);
+                        showError("网络错误: " + t.getMessage());
                     }
                 });
     }
 
-    private void displayRecordDetails(TravelRecord record, TextView tvDestination,
-                                      TextView tvDateRange, TextView tvDescription,
-                                      TextView tvBudget, LinearLayout mediaContainer) {
+    private void displayRecordDetails(TravelRecord record) {
+        TextView tvDestination = findViewById(R.id.tv_detail_destination);
+        TextView tvDateRange = findViewById(R.id.tv_detail_date_range);
+        TextView tvDescription = findViewById(R.id.tv_detail_description);
+        TextView tvBudget = findViewById(R.id.tv_detail_budget);
+        LinearLayout mediaContainer = findViewById(R.id.media_container);
+
         // 设置基本信息
         tvDestination.setText(record.getDestination());
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日", Locale.getDefault());
         String startDate = record.getStartDate() != null ?
                 dateFormat.format(record.getStartDate()) : "未设置";
         String endDate = record.getEndDate() != null ?
                 dateFormat.format(record.getEndDate()) : "未设置";
-        tvDateRange.setText(startDate + " 至 " + endDate);
+        tvDateRange.setText(String.format("%s - %s", startDate, endDate));
 
-        tvDescription.setText(record.getDescription());
-        tvBudget.setText(String.format(Locale.getDefault(), "预算: ¥%.2f", record.getBudget()));
+        tvDescription.setText(record.getDescription() != null ?
+                record.getDescription() : "暂无描述");
+        tvBudget.setText(String.format(Locale.getDefault(), "¥%.2f", record.getBudget()));
 
         // 加载并显示媒体
         List<TravelMedia> mediaList = record.getMedia();
         if (mediaList == null || mediaList.isEmpty()) {
-            Log.d(TAG, "没有媒体数据");
+            findViewById(R.id.media_container).setVisibility(View.GONE);
             return;
         }
 
-        Log.d(TAG, "共有" + mediaList.size() + "个媒体文件");
         mediaContainer.removeAllViews(); // 清除现有视图
 
         for (TravelMedia media : mediaList) {
-            Log.d(TAG, "准备加载媒体: " + media.getMediaUrl());
+            MaterialCardView cardView = new MaterialCardView(this);
+            LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            cardParams.setMargins(0, 0, 0, 16);
+            cardView.setLayoutParams(cardParams);
+            cardView.setRadius(getResources().getDimension(R.dimen.card_corner_radius));
+            cardView.setCardElevation(getResources().getDimension(R.dimen.card_elevation));
 
             ImageView imageView = new ImageView(this);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+            imageView.setLayoutParams(new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    getResources().getDimensionPixelSize(R.dimen.media_height));
-            params.setMargins(0, 0, 0, 16);
-            imageView.setLayoutParams(params);
+                    getResources().getDimensionPixelSize(R.dimen.media_height)));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setAdjustViewBounds(true);
 
             // 使用Glide加载图片
             Glide.with(this)
@@ -152,7 +163,6 @@ public class TravelDetailActivity extends AppCompatActivity {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model,
                                                     Target<Drawable> target, boolean isFirstResource) {
-                            Log.e(TAG, "图片加载失败: " + media.getMediaUrl(), e);
                             return false;
                         }
 
@@ -160,13 +170,21 @@ public class TravelDetailActivity extends AppCompatActivity {
                         public boolean onResourceReady(Drawable resource, Object model,
                                                        Target<Drawable> target, DataSource dataSource,
                                                        boolean isFirstResource) {
-                            Log.d(TAG, "图片加载成功: " + media.getMediaUrl());
                             return false;
                         }
                     })
                     .into(imageView);
 
-            mediaContainer.addView(imageView);
+            cardView.addView(imageView);
+            mediaContainer.addView(cardView);
         }
+    }
+
+    private void showLoading(boolean show) {
+        findViewById(R.id.progress_bar).setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    private void showError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

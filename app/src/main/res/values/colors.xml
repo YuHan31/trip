@@ -29,4 +29,9 @@
         <!-- ===== 按钮状态色 ===== -->
         <color name="button_pressed">#1E88E5</color>      <!-- 按下状态 -->
         <color name="button_normal">#3F51B5</color>       <!-- 默认状态 -->
+
+    <color name="lightBackground">#FAFAFA</color>
+    <color name="textPrimary">#DE000000</color>
+    <color name="textSecondary">#8A000000</color>
+    <color name="dividerColor">#1F000000</color>
 </resources>
