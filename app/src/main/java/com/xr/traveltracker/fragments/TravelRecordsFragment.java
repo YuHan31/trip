@@ -37,7 +37,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class TravelRecordsFragment extends Fragment {
+public class TravelRecordsFragment extends Fragment implements TravelRecordAdapter.DeleteListener {
     private RecyclerView recyclerView;
     private TravelRecordAdapter adapter;
     private List<TravelRecord> travelRecords = new ArrayList<>();
@@ -48,7 +48,6 @@ public class TravelRecordsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_travel_records, container, false);
 
-        // 获取传递的参数
         Bundle args = getArguments();
         if (args != null) {
             token = args.getString("token");
@@ -57,7 +56,7 @@ public class TravelRecordsFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new TravelRecordAdapter(travelRecords);
+        adapter = new TravelRecordAdapter(travelRecords, token, this);
         recyclerView.setAdapter(adapter);
 
         loadTravelRecords();
@@ -65,17 +64,25 @@ public class TravelRecordsFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onDeleteSuccess(int position) {
+        Toast.makeText(getContext(), "删除成功", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDeleteFailure(String errorMessage) {
+        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+    }
+
     private void loadTravelRecords() {
         showLoading(true);
 
-        // 增强日志记录
         Log.d("TravelRecords", "Loading records for user: " + userId);
         Log.d("TravelRecords", "API Endpoint: " + getString(R.string.base_url) + "api/travel/user/" + userId);
 
-        // 配置Gson日期格式（匹配数据库DATE类型）
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd")
-                .registerTypeAdapter(Date.class, new DateDeserializer()) // 自定义日期解析器
+                .registerTypeAdapter(Date.class, new DateDeserializer())
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -85,7 +92,6 @@ public class TravelRecordsFragment extends Fragment {
 
         ApiService apiService = retrofit.create(ApiService.class);
 
-        // 打印请求头信息
         Log.d("TravelRecords", "Request Headers: Authorization: Bearer " + token);
 
         apiService.getUserTravelRecords("Bearer " + token, userId)
@@ -93,8 +99,6 @@ public class TravelRecordsFragment extends Fragment {
                     @Override
                     public void onResponse(Call<List<TravelRecord>> call, Response<List<TravelRecord>> response) {
                         showLoading(false);
-
-                        // 记录完整响应信息
                         Log.d("TravelRecords", "Response received. Code: " + response.code());
 
                         if (response.isSuccessful()) {
@@ -103,7 +107,6 @@ public class TravelRecordsFragment extends Fragment {
                             String rawResponse = new Gson().toJson(response.body());
                             Log.d("TravelRecords", "Raw response: " + rawResponse);
                             if (records != null && !records.isEmpty()) {
-                                // 验证数据完整性
                                 for (TravelRecord record : records) {
                                     if (record.getStartDate() == null || record.getEndDate() == null) {
                                         Log.w("TravelRecords", "Invalid date in record: " + record.getTravelId());
@@ -134,7 +137,6 @@ public class TravelRecordsFragment extends Fragment {
                 });
     }
 
-    // 提取错误处理逻辑到单独方法
     private void handleErrorResponse(Response<List<TravelRecord>> response) {
         try {
             String errorBody = response.errorBody() != null ? response.errorBody().string() : "无错误详情";
@@ -147,7 +149,6 @@ public class TravelRecordsFragment extends Fragment {
                 Toast.makeText(getContext(), "服务器错误: " + response.code(), Toast.LENGTH_SHORT).show();
             }
 
-            // 记录原始错误响应
             Log.e("TravelRecords", "完整错误响应: " + errorBody);
         } catch (IOException e) {
             Log.e("TravelRecords", "解析错误响应时出错", e);
@@ -155,9 +156,9 @@ public class TravelRecordsFragment extends Fragment {
 
         showErrorView();
     }
+
     private void showLoading(boolean show) {
         // 实现显示/隐藏加载进度条的逻辑
-        // 例如使用ProgressBar或SwipeRefreshLayout
     }
 
     private void showEmptyView() {
@@ -167,6 +168,7 @@ public class TravelRecordsFragment extends Fragment {
     private void showErrorView() {
         // 显示错误提示和重试按钮
     }
+
     public class DateDeserializer implements JsonDeserializer<Date> {
         private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
