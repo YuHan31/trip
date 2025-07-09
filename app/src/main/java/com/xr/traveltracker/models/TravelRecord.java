@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Date;
+import java.util.List;
 
 public class TravelRecord implements Parcelable {
     private int travelId;
@@ -12,11 +13,12 @@ public class TravelRecord implements Parcelable {
     private Date startDate;
     private Date endDate;
     private String description;
-    private double budget; // 改为 double 类型
+    private double budget;
+    private List<TravelMedia> media;
 
     public TravelRecord(int travelId, int userId, String destination,
                         Date startDate, Date endDate, String description,
-                        double budget) {
+                        double budget, List<TravelMedia> media) {
         this.travelId = travelId;
         this.userId = userId;
         this.destination = destination;
@@ -24,6 +26,7 @@ public class TravelRecord implements Parcelable {
         this.endDate = endDate;
         this.description = description;
         this.budget = budget;
+        this.media = media;
     }
 
     protected TravelRecord(Parcel in) {
@@ -35,7 +38,8 @@ public class TravelRecord implements Parcelable {
         long endDateVal = in.readLong();
         endDate = endDateVal == -1 ? null : new Date(endDateVal);
         description = in.readString();
-        budget = in.readDouble(); // 改为 readDouble
+        budget = in.readDouble();
+        media = in.createTypedArrayList(TravelMedia.CREATOR);
     }
 
     public static final Creator<TravelRecord> CREATOR = new Creator<TravelRecord>() {
@@ -63,7 +67,8 @@ public class TravelRecord implements Parcelable {
         dest.writeLong(startDate != null ? startDate.getTime() : -1);
         dest.writeLong(endDate != null ? endDate.getTime() : -1);
         dest.writeString(description);
-        dest.writeDouble(budget); // 改为 writeDouble
+        dest.writeDouble(budget);
+        dest.writeTypedList(media);
     }
 
     // Getter和Setter方法
@@ -87,4 +92,7 @@ public class TravelRecord implements Parcelable {
 
     public double getBudget() { return budget; }
     public void setBudget(double budget) { this.budget = budget; }
+
+    public List<TravelMedia> getMedia() { return media; }
+    public void setMedia(List<TravelMedia> media) { this.media = media; }
 }

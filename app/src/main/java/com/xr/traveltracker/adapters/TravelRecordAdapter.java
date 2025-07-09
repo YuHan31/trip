@@ -19,7 +19,6 @@ import com.xr.traveltracker.activities.TravelDetailActivity;
 import com.xr.traveltracker.api.ApiService;
 import com.xr.traveltracker.models.TravelRecord;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
@@ -31,17 +30,19 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class TravelRecordAdapter extends RecyclerView.Adapter<TravelRecordAdapter.ViewHolder> {
-    private List<TravelRecord> travelRecords;
-    private String token;
-    private DeleteListener deleteListener;
-    private Context context;
+    private static final String TAG = "TravelRecordAdapter";
+    private final Context context;
+    private final List<TravelRecord> travelRecords;
+    private final String token;
+    private final DeleteListener deleteListener;
 
     public interface DeleteListener {
         void onDeleteSuccess(int position);
         void onDeleteFailure(String errorMessage);
     }
 
-    public TravelRecordAdapter(Context context, List<TravelRecord> travelRecords, String token, DeleteListener deleteListener) {
+    public TravelRecordAdapter(Context context, List<TravelRecord> travelRecords,
+                               String token, DeleteListener deleteListener) {
         this.context = context;
         this.travelRecords = travelRecords;
         this.token = token;
@@ -62,44 +63,37 @@ public class TravelRecordAdapter extends RecyclerView.Adapter<TravelRecordAdapte
         holder.bind(record);
 
         holder.btnDelete.setOnClickListener(v -> {
-            int travelId = record.getTravelId();
-            showDeleteConfirmationDialog(holder.itemView.getContext(), travelId, position);
+            showDeleteConfirmationDialog(record.getTravelId(), position);
         });
 
         holder.btnViewDetail.setOnClickListener(v -> {
-            // 直接使用当前列表中的记录对象，避免再次网络请求
-            openDetailActivity(record);
+            openDetailActivity(record.getTravelId());
         });
     }
 
-    private void openDetailActivity(TravelRecord record) {
-        if (record == null) {
-            Toast.makeText(context, "无法查看详情：记录为空", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
+    private void openDetailActivity(int travelId) {
         try {
             Intent intent = new Intent(context, TravelDetailActivity.class);
-            // 直接传递Parcelable对象
-            intent.putExtra("travel_record", record);
+            intent.putExtra("travel_id", travelId);
+            intent.putExtra("token", token);
             context.startActivity(intent);
         } catch (Exception e) {
-            Log.e("TravelRecordAdapter", "打开详情页失败", e);
+            Log.e(TAG, "打开详情页失败", e);
             Toast.makeText(context, "打开详情页失败", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void showDeleteConfirmationDialog(Context context, int travelId, int position) {
+    private void showDeleteConfirmationDialog(int travelId, int position) {
         new AlertDialog.Builder(context)
                 .setTitle(R.string.confirm_delete)
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                    deleteTravelRecord(context, travelId, position);
+                    deleteTravelRecord(travelId, position);
                 })
                 .setNegativeButton(android.R.string.no, null)
                 .show();
     }
 
-    private void deleteTravelRecord(Context context, int travelId, int position) {
+    private void deleteTravelRecord(int travelId, int position) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(context.getString(R.string.base_url))
                 .addConverterFactory(GsonConverterFactory.create())
@@ -115,22 +109,19 @@ public class TravelRecordAdapter extends RecyclerView.Adapter<TravelRecordAdapte
                             travelRecords.remove(position);
                             notifyItemRemoved(position);
                             deleteListener.onDeleteSuccess(position);
+                            Toast.makeText(context, "删除成功", Toast.LENGTH_SHORT).show();
                         } else {
                             String errorMessage = "删除失败: " + response.code();
-                            if (response.errorBody() != null) {
-                                try {
-                                    errorMessage = response.errorBody().string();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
                             deleteListener.onDeleteFailure(errorMessage);
+                            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
-                        deleteListener.onDeleteFailure("网络错误: " + t.getMessage());
+                        String errorMessage = "网络错误: " + t.getMessage();
+                        deleteListener.onDeleteFailure(errorMessage);
+                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -157,19 +148,10 @@ public class TravelRecordAdapter extends RecyclerView.Adapter<TravelRecordAdapte
             tvDestination.setText(record.getDestination());
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            String startDateStr = "未设置";
-            String endDateStr = "未设置";
-
-            try {
-                if (record.getStartDate() != null) {
-                    startDateStr = dateFormat.format(record.getStartDate());
-                }
-                if (record.getEndDate() != null) {
-                    endDateStr = dateFormat.format(record.getEndDate());
-                }
-            } catch (Exception e) {
-                Log.e("TravelRecordAdapter", "Date formatting error", e);
-            }
+            String startDateStr = record.getStartDate() != null ?
+                    dateFormat.format(record.getStartDate()) : "未设置";
+            String endDateStr = record.getEndDate() != null ?
+                    dateFormat.format(record.getEndDate()) : "未设置";
 
             tvDate.setText(startDateStr + " 至 " + endDateStr);
             tvDescription.setText(record.getDescription());
