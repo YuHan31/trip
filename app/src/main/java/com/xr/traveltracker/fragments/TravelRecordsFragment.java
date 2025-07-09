@@ -56,7 +56,7 @@ public class TravelRecordsFragment extends Fragment implements TravelRecordAdapt
 
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new TravelRecordAdapter(travelRecords, token, this);
+        adapter = new TravelRecordAdapter(getContext(), travelRecords, token, this);
         recyclerView.setAdapter(adapter);
 
         loadTravelRecords();
