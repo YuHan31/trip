@@ -12,12 +12,11 @@ public class TravelRecord implements Parcelable {
     private Date startDate;
     private Date endDate;
     private String description;
-    private String budget;
+    private double budget; // 改为 double 类型
 
-    // 构造函数
     public TravelRecord(int travelId, int userId, String destination,
                         Date startDate, Date endDate, String description,
-                        String budget) {
+                        double budget) {
         this.travelId = travelId;
         this.userId = userId;
         this.destination = destination;
@@ -27,7 +26,6 @@ public class TravelRecord implements Parcelable {
         this.budget = budget;
     }
 
-    // Parcelable 构造函数
     protected TravelRecord(Parcel in) {
         travelId = in.readInt();
         userId = in.readInt();
@@ -37,7 +35,7 @@ public class TravelRecord implements Parcelable {
         long endDateVal = in.readLong();
         endDate = endDateVal == -1 ? null : new Date(endDateVal);
         description = in.readString();
-        budget = in.readString();
+        budget = in.readDouble(); // 改为 readDouble
     }
 
     public static final Creator<TravelRecord> CREATOR = new Creator<TravelRecord>() {
@@ -65,7 +63,7 @@ public class TravelRecord implements Parcelable {
         dest.writeLong(startDate != null ? startDate.getTime() : -1);
         dest.writeLong(endDate != null ? endDate.getTime() : -1);
         dest.writeString(description);
-        dest.writeString(budget);
+        dest.writeDouble(budget); // 改为 writeDouble
     }
 
     // Getter和Setter方法
@@ -87,6 +85,6 @@ public class TravelRecord implements Parcelable {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public String getBudget() { return budget; }
-    public void setBudget(String budget) { this.budget = budget; }
+    public double getBudget() { return budget; }
+    public void setBudget(double budget) { this.budget = budget; }
 }

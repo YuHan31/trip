@@ -67,4 +67,10 @@ public interface ApiService {
                 @Header("Authorization") String token,
                 @Path("travelId") int travelId
         );
+
+    @GET("api/travel/{travelId}")
+    Call<TravelRecord> getTravelRecordDetails(
+            @Header("Authorization") String token,
+            @Path("travelId") int travelId
+    );
     }

@@ -2,6 +2,7 @@
     <string name="app_name">Travel Tracker</string>
     <string name="delete">删除</string>
     <string name="confirm_delete">确定要删除这条旅行记录吗？</string>
+    <string name="view_details">查看详情</string>
 
     <!-- 底部导航栏 -->
     <string name="home">首页</string>

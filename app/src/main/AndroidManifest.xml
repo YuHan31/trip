@@ -40,16 +40,7 @@
 
         <activity android:name=".activities.EditProfileActivity" />
 
-
-
-        <!-- 其他Activity -->
-        <!-- <activity-->
-        <!--     android:name=".activities.AddTravelActivity"-->
-        <!--     android:exported="false" />-->
-
-        <!-- <activity-->
-        <!--     android:name=".activities.TravelDetailActivity"-->
-        <!--     android:exported="false" />-->
+        <activity android:name=".activities.TravelDetailActivity" />
 
     </application>
 </manifest>
