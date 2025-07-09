@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -53,6 +54,10 @@ public class TravelDetailActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        // 初始化返回按钮
+        ImageButton btnBack = findViewById(R.id.btn_back);
+        btnBack.setOnClickListener(v -> finish());
 
         // 初始化视图
         TextView tvDestination = findViewById(R.id.tv_detail_destination);

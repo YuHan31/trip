@@ -46,7 +46,7 @@ public class TravelRecordsFragment extends Fragment implements TravelRecordAdapt
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_travel_records, container, false);
+        View view = inflater.inflate(R.layout.activity_trip_list, container, false);
 
         Bundle args = getArguments();
         if (args != null) {
