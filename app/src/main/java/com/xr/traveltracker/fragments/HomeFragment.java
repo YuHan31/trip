@@ -35,16 +35,16 @@ public class HomeFragment extends Fragment {
             R.drawable.ic_foreground2,
             R.drawable.ic_foreground3
     );
-    private List<String> dynamicContent = Arrays.asList("Content 1", "Content 2", "Content 3");
+    private List<String> dynamicContent = Arrays.asList("内容1", "内容2", "内容3");
     private MediaPlayer mediaPlayer;
     private boolean isUserPlaying = false;
 
-    // 自动播放相关变量
     private Handler handler = new Handler(Looper.getMainLooper());
     private Runnable runnable;
-    private static final int AUTO_PLAY_DELAY = 3000; // 自动播放间隔时间（毫秒）
+    private static final int AUTO_PLAY_DELAY = 3000;
 
     private MaterialCardView cardViewRecords;
+    private MaterialCardView cardViewVideos;
     private String token;
     private String userId;
 
@@ -56,43 +56,41 @@ public class HomeFragment extends Fragment {
         viewPager = view.findViewById(R.id.viewPager);
         recyclerView = view.findViewById(R.id.recyclerView);
         cardViewRecords = view.findViewById(R.id.cardViewRecords);
+        cardViewVideos = view.findViewById(R.id.cardViewVideos);
 
-        // 初始化音乐播放器
         initializeMediaPlayer();
 
-        // 复制图片列表以实现无缝循环
         List<Integer> duplicatedImages = new ArrayList<>();
         duplicatedImages.addAll(images);
         duplicatedImages.addAll(images);
         duplicatedImages.addAll(images);
 
-        // 设置ViewPager2和RecyclerView的适配器
         viewPager.setAdapter(new MyPagerAdapter(duplicatedImages));
         recyclerView.setAdapter(new MyRecyclerViewAdapter(dynamicContent));
 
-        // 启动自动播放
         startAutoPlay();
 
-        // 获取传递的参数
         Bundle args = getArguments();
         if (args != null) {
             token = args.getString("token");
             userId = args.getString("userId");
         }
 
-        // 设置卡片点击事件
         cardViewRecords.setOnClickListener(v -> {
-            // 添加点击效果
             cardViewRecords.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100)
                     .withEndAction(() -> cardViewRecords.animate().scaleX(1f).scaleY(1f).setDuration(100));
-
             navigateToTravelRecords();
+        });
+
+        cardViewVideos.setOnClickListener(v -> {
+            cardViewVideos.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100)
+                    .withEndAction(() -> cardViewVideos.animate().scaleX(1f).scaleY(1f).setDuration(100));
+            navigateToVideos();
         });
 
         return view;
     }
 
-    // 其他方法保持不变...
     private void initializeMediaPlayer() {
         mediaPlayer = MediaPlayer.create(getContext(), R.raw.music);
         if (mediaPlayer != null) {
@@ -110,7 +108,6 @@ public class HomeFragment extends Fragment {
             mediaPlayer.release();
             mediaPlayer = null;
         }
-        // 停止自动播放
         stopAutoPlay();
     }
 
@@ -119,21 +116,19 @@ public class HomeFragment extends Fragment {
         super.onPause();
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
-            isUserPlaying = true; // 保存播放状态
+            isUserPlaying = true;
         } else {
             isUserPlaying = false;
         }
-        // 暂停自动播放
         stopAutoPlay();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mediaPlayer != null && isUserPlaying) { // 只有用户之前播放了音乐，才会自动播放
+        if (mediaPlayer != null && isUserPlaying) {
             mediaPlayer.start();
         }
-        // 恢复自动播放
         startAutoPlay();
     }
 
@@ -164,6 +159,20 @@ public class HomeFragment extends Fragment {
 
     private void navigateToTravelRecords() {
         TravelRecordsFragment fragment = new TravelRecordsFragment();
+        Bundle args = new Bundle();
+        args.putString("token", token);
+        args.putString("userId", userId);
+        fragment.setArguments(args);
+
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void navigateToVideos() {
+        // 替换为你的视频Fragment
+        VideosFragment fragment = new VideosFragment();
         Bundle args = new Bundle();
         args.putString("token", token);
         args.putString("userId", userId);

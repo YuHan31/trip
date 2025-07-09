@@ -4,17 +4,23 @@ import static android.app.Activity.RESULT_OK;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -26,9 +32,12 @@ import com.xr.traveltracker.models.TravelResponse;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -43,15 +52,20 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AddFragment extends Fragment {
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int REQUEST_IMAGE_PICK = 2;
+
     private TextInputEditText etDestination, etStartDate, etEndDate, etDescription, etBudget;
     private Button btnSubmit;
     private ImageButton btnAddPhoto;
+    private ImageView imgPreview;
     private String token;
     private String userId;
     private List<Uri> selectedImages = new ArrayList<>();
+    private String currentPhotoPath;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add, container, false);
 
         Bundle args = getArguments();
@@ -75,6 +89,7 @@ public class AddFragment extends Fragment {
         etBudget = view.findViewById(R.id.et_budget);
         btnSubmit = view.findViewById(R.id.btn_submit);
         btnAddPhoto = view.findViewById(R.id.btn_add_photo);
+        imgPreview = view.findViewById(R.id.img_preview);
     }
 
     private void setupDatePickers() {
@@ -97,13 +112,114 @@ public class AddFragment extends Fragment {
     }
 
     private void setupListeners() {
-        btnAddPhoto.setOnClickListener(v -> openImagePicker());
+        btnAddPhoto.setOnClickListener(v -> showImagePickerOptions());
 
         btnSubmit.setOnClickListener(v -> {
             if (validateInput()) {
                 createTravelRecord();
             }
         });
+    }
+
+    private void showImagePickerOptions() {
+        String[] options = {"拍照", "从相册选择"};
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getContext());
+        builder.setTitle("选择图片来源");
+        builder.setItems(options, (dialog, which) -> {
+            if (which == 0) {
+                dispatchTakePictureIntent();
+            } else {
+                openGallery();
+            }
+        });
+        builder.show();
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(requireActivity().getPackageManager()) != null) {
+            File photoFile = createImageFile();
+            if (photoFile != null) {
+                Uri photoUri = FileProvider.getUriForFile(requireContext(),
+                        "com.xr.traveltracker.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    private File createImageFile() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        try {
+            File image = File.createTempFile(
+                    imageFileName,  /* prefix */
+                    ".jpg",         /* suffix */
+                    storageDir      /* directory */
+            );
+            currentPhotoPath = image.getAbsolutePath();
+            return image;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        startActivityForResult(Intent.createChooser(intent, "选择图片"), REQUEST_IMAGE_PICK);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                // 处理拍照结果
+                if (currentPhotoPath != null) {
+                    Uri imageUri = Uri.fromFile(new File(currentPhotoPath));
+                    selectedImages.add(imageUri);
+                    updateImagePreview(imageUri);
+                    Toast.makeText(getContext(), "已添加1张照片", Toast.LENGTH_SHORT).show();
+                }
+            } else if (requestCode == REQUEST_IMAGE_PICK && data != null) {
+                // 处理相册选择结果
+                if (data.getClipData() != null) {
+                    int count = data.getClipData().getItemCount();
+                    for (int i = 0; i < count; i++) {
+                        Uri imageUri = data.getClipData().getItemAt(i).getUri();
+                        selectedImages.add(imageUri);
+                    }
+                } else if (data.getData() != null) {
+                    Uri imageUri = data.getData();
+                    selectedImages.add(imageUri);
+                }
+                // 显示第一张图片预览
+                if (!selectedImages.isEmpty()) {
+                    updateImagePreview(selectedImages.get(0));
+                }
+                Toast.makeText(getContext(), "已选择 " + selectedImages.size() + " 张图片", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void updateImagePreview(Uri imageUri) {
+        try {
+            InputStream inputStream = requireContext().getContentResolver().openInputStream(imageUri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            imgPreview.setImageBitmap(bitmap);
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            imgPreview.setImageResource(R.drawable.ic_default_photo);
+        }
     }
 
     private boolean validateInput() {
@@ -243,33 +359,6 @@ public class AddFragment extends Fragment {
         }
     }
 
-    private void openImagePicker() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "选择图片"), 1);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
-            if (data.getClipData() != null) {
-                int count = data.getClipData().getItemCount();
-                for (int i = 0; i < count; i++) {
-                    Uri imageUri = data.getClipData().getItemAt(i).getUri();
-                    selectedImages.add(imageUri);
-                }
-            } else if (data.getData() != null) {
-                Uri imageUri = data.getData();
-                selectedImages.add(imageUri);
-            }
-            Toast.makeText(getContext(), "已选择 " + selectedImages.size() + " 张图片", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private void clearForm() {
         etDestination.setText("");
         etStartDate.setText("");
@@ -277,5 +366,6 @@ public class AddFragment extends Fragment {
         etDescription.setText("");
         etBudget.setText("");
         selectedImages.clear();
+        imgPreview.setImageResource(R.drawable.ic_default_photo);
     }
 }

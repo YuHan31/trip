@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.xr.traveltracker">
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -37,10 +44,22 @@
         <activity
             android:name=".activities.RegisterActivity"
             android:exported="false" />
+        <activity
+            android:name=".video.VideoPlayerActivity"
+            android:screenOrientation="portrait"
+        android:configChanges="orientation|screenSize|keyboardHidden"/>
 
         <activity android:name=".activities.EditProfileActivity" />
 
-
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.xr.traveltracker.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <!-- 其他Activity -->
         <!-- <activity-->

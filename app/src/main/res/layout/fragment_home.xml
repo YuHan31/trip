@@ -6,15 +6,14 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- ViewPager2 for images -->
+    <!-- 图片轮播 -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginBottom="16dp"/>
 
-    <!-- RecyclerView for dynamic content -->
-
+    <!-- 动态内容列表 -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"/>
 
-    <!-- 修改后的卡片式按钮 -->
+    <!-- 旅行记录卡片 -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardViewRecords"
         android:layout_width="match_parent"
@@ -45,7 +44,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!-- 背景图片 -->
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -53,7 +51,6 @@
                 android:src="@drawable/record"
                 android:alpha="0.7"/>
 
-            <!-- 内容 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -65,6 +62,54 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/chakan"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- 新增的视频功能卡片 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="精选视频推荐"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardViewVideos"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:strokeColor="@color/colorAccent"
+        app:strokeWidth="1dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/placeholder"
+                android:alpha="0.7"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_video"/>
 
             </LinearLayout>
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -12,6 +13,7 @@
         android:layout_marginTop="32dp"
         android:background="@drawable/background_main">
 
+        <!-- 标题 -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -105,27 +107,46 @@
                 android:inputType="numberDecimal"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- 图片上传区域 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="16dp">
 
-            <ImageButton
-                android:id="@+id/btn_add_photo"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_add_photo"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
+            <!-- 图片预览区域 -->
+            <ImageView
+                android:id="@+id/img_preview"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_default_photo"
+                android:scaleType="centerCrop"
+                android:background="@drawable/image_border"/>
 
-            <TextView
+            <!-- 添加照片按钮 -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="添加照片"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="8dp"/>
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageButton
+                    android:id="@+id/btn_add_photo"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_add_photo"
+                    android:background="?attr/selectableItemBackgroundBorderless"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="添加照片"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
         </LinearLayout>
 
+        <!-- 提交按钮 -->
         <Button
             android:id="@+id/btn_submit"
             android:layout_width="match_parent"

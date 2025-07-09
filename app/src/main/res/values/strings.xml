@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Travel Tracker</string>
+    <string name="add_travel">添加旅行</string>
+    <string name="title_hint">旅行标题</string>
     <string name="delete">删除</string>
     <string name="confirm_delete">确定要删除这条旅行记录吗？</string>
 
@@ -9,5 +11,6 @@
     <string name="add">添加</string>
     <string name="profile">我的</string>
 
-    <string name="base_url">http://10.10.1.92:3000/</string>
+<!--<string name="base_url">http://10.10.1.92:3000/</string>-->
+    <string name="base_url">http://10.10.1.193:3000/</string>
 </resources>
