@@ -11,16 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
-        android:layout_marginTop="20dp"> <!-- 添加顶部外边距，数值可根据需要调整 -->
+        android:layout_marginTop="20dp">
 
-        <!-- 全局Toolbar（无返回键） -->
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:title="@string/app_name"
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-            android:paddingHorizontal="16dp"/>
+            android:paddingHorizontal="16dp"
+            app:titleCentered="true"/> <!-- 关键属性 -->
     </FrameLayout>
 
     <!-- 内容容器（调整位置到Toolbar下方） -->
