@@ -51,6 +51,7 @@
 
         <activity android:name=".activities.EditProfileActivity" />
 
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.xr.traveltracker.fileprovider"
@@ -70,6 +71,7 @@
         <!--     android:name=".activities.TravelDetailActivity"-->
         <!--     android:exported="false" />-->
         <activity android:name=".activities.TravelDetailActivity" />
+
 
     </application>
 </manifest>
