@@ -6,6 +6,9 @@
     tools:context=".fragments.TravelRecordsFragment">
 
     <!-- Toolbar with back button -->
+
+    <!-- RecyclerView for travel items -->
+
     <RelativeLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -33,12 +36,12 @@
             android:textStyle="bold" />
     </RelativeLayout>
 
-    <!-- RecyclerView for travel items -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
+        android:layout_marginTop="0dp"
         android:clipToPadding="false"
         android:padding="8dp" />
 
