@@ -25,7 +25,6 @@ import com.xr.traveltracker.R;
 import com.xr.traveltracker.api.ApiService;
 import com.xr.traveltracker.models.TravelMedia;
 import com.xr.traveltracker.models.TravelRecord;
-import com.xr.traveltracker.utils.NetworkUtils;
 
 
 import java.text.SimpleDateFormat;
@@ -48,10 +47,6 @@ public class TravelDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_travel_detail);
 
-        // 检查网络连接
-        if (!NetworkUtils.isNetworkAvailable(this)) {
-            Toast.makeText(this, "网络不可用，请检查连接", Toast.LENGTH_LONG).show();
-        }
         // 获取传递的参数
         travelId = getIntent().getIntExtra("travel_id", -1);
         token = getIntent().getStringExtra("token");
