@@ -47,7 +47,7 @@
             android:name=".activities.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".video.VideoPlayerActivity"
+            android:name=".activities.VideoPlayerActivity"
             android:screenOrientation="portrait"
         android:configChanges="orientation|screenSize|keyboardHidden"/>
 
@@ -64,14 +64,6 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <!-- 其他Activity -->
-        <!-- <activity-->
-        <!--     android:name=".activities.AddTravelActivity"-->
-        <!--     android:exported="false" />-->
-
-        <!-- <activity-->
-        <!--     android:name=".activities.TravelDetailActivity"-->
-        <!--     android:exported="false" />-->
         <activity android:name=".activities.TravelDetailActivity" />
 
 

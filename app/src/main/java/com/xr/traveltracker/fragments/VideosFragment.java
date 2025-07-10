@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.xr.traveltracker.R;
 import com.xr.traveltracker.adapters.VideoAdapter;
 import com.xr.traveltracker.models.VideoItem;
-import com.xr.traveltracker.video.VideoPlayerActivity;
+import com.xr.traveltracker.activities.VideoPlayerActivity;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,7 +3,6 @@ package com.xr.traveltracker.activities;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -15,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.xr.traveltracker.R;
-import com.xr.traveltracker.database.DatabaseHelper;
 import com.xr.traveltracker.fragments.AddFragment;
 import com.xr.traveltracker.fragments.HomeFragment;
 import com.xr.traveltracker.fragments.ProfileFragment;
@@ -30,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     private long lastClickTime = 0;
     private boolean isInitialProfileLoad = false;
     private static final long CLICK_DELAY = 500; // 防抖延迟时间(毫秒)
-    private DatabaseHelper dbHelper;
     private MediaPlayer mediaPlayer;
     private ImageButton musicControlButton;
     private ObjectAnimator animator;
@@ -49,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         container = findViewById(R.id.container);
         musicControlButton = findViewById(R.id.btn_music_control); // 获取播放按钮
-        dbHelper = new DatabaseHelper(this); // 初始化数据库帮助类
-        dbHelper.insertTravel("Paris", "2024-07-26", "Visited the Eiffel Tower");
 
         // 初始化音乐播放器
         initializeMediaPlayer();

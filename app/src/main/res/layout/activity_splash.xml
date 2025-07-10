@@ -31,7 +31,7 @@
             android:id="@+id/welcome_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="欢迎使用旅行足迹记录器"
+            android:text="欢迎使用旅行随心记"
             android:textColor="@android:color/white"
             android:textSize="31sp"
             android:textStyle="bold"
@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="32dp"
-        android:text="©2023 Travel Tracker"
+        android:text="©2025 Travel Tracker"
         android:textColor="@android:color/white"
         android:textSize="12sp" />
 </FrameLayout>

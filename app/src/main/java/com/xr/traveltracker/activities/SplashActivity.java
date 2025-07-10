@@ -2,14 +2,13 @@ package com.xr.traveltracker.activities;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
+
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+
 import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
