@@ -243,7 +243,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void navigateToVideos() {
-        // 替换为你的视频Fragment
         VideosFragment fragment = new VideosFragment();
         Bundle args = new Bundle();
         args.putString("token", token);
