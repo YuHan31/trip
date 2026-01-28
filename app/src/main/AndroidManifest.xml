@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -46,13 +46,41 @@
         <activity
             android:name=".activities.RegisterActivity"
             android:exported="false" />
+
+        <!-- 视频播放Activity -->
         <activity
             android:name=".activities.VideoPlayerActivity"
             android:screenOrientation="portrait"
-        android:configChanges="orientation|screenSize|keyboardHidden"/>
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false" />
 
-        <activity android:name=".activities.EditProfileActivity" />
+        <!-- 热门景点Activity -->
+        <activity
+            android:name=".activities.AttractionsListActivity"
+            android:label="热门景点"
+            android:exported="false" />
 
+        <!-- 天气查询Activity -->
+        <activity
+            android:name=".activities.WeatherActivity"
+            android:label="天气查询"
+            android:exported="false" />
+
+        <!-- 旅行痕迹Activity -->
+        <activity
+            android:name=".activities.TravelTrackActivity"
+            android:label="旅行痕迹"
+            android:exported="false" />
+
+        <!-- 编辑个人资料Activity -->
+        <activity
+            android:name=".activities.EditProfileActivity"
+            android:exported="false" />
+
+        <!-- 旅行详情Activity -->
+        <activity
+            android:name=".activities.TravelDetailActivity"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -63,9 +91,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
-        <activity android:name=".activities.TravelDetailActivity" />
-
 
     </application>
 </manifest>
