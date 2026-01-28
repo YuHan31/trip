@@ -1,6 +1,8 @@
 package com.xr.traveltracker.api;
 
 
+import com.xr.traveltracker.models.AttractionListResponse;
+import com.xr.traveltracker.models.FilterOptionsResponse;
 import com.xr.traveltracker.models.LoginRequest;
 import com.xr.traveltracker.models.LoginResponse;
 import com.xr.traveltracker.models.MediaResponse;
@@ -26,6 +28,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
     @POST("api/users/login")
@@ -72,5 +75,44 @@ public interface ApiService {
     Call<TravelRecord> getTravelRecordDetails(
             @Header("Authorization") String token,
             @Path("travelId") int travelId
+    );
+
+    @GET("api/attractions/list")
+    Call<AttractionListResponse> getAllAttractions(
+            @Query("page") int page,
+            @Query("limit") int limit,
+            @Query("type") String type,
+            @Query("city") String city,
+            @Query("search") String search
+    );
+
+    @GET("api/attractions/hot")
+    Call<AttractionListResponse> getHotAttractions();
+
+    @GET("api/attractions/detail/{id}")
+    Call<com.xr.traveltracker.models.AttractionDetailResponse> getAttractionDetail(@Path("id") int id);
+
+    @GET("api/attractions/filters")
+    Call<FilterOptionsResponse> getFilterOptions();
+
+    @GET("api/attractions/search")
+    Call<AttractionListResponse> searchAttractions(
+            @Query("keyword") String keyword,
+            @Query("page") int page,
+            @Query("limit") int limit
+    );
+
+    @GET("api/attractions/city/{city}")
+    Call<AttractionListResponse> getAttractionsByCity(
+            @Path("city") String city,
+            @Query("page") int page,
+            @Query("limit") int limit
+    );
+
+    @GET("api/attractions/type/{type}")
+    Call<AttractionListResponse> getAttractionsByType(
+            @Path("type") String type,
+            @Query("page") int page,
+            @Query("limit") int limit
     );
     }

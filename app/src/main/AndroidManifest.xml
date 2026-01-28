@@ -60,6 +60,12 @@
             android:label="热门景点"
             android:exported="false" />
 
+        <!-- 景点详情 -->
+        <activity
+            android:name=".activities.AttractionDetailActivity"
+            android:label="景点详情"
+            android:exported="false" />
+
         <!-- 天气查询Activity -->
         <activity
             android:name=".activities.WeatherActivity"
