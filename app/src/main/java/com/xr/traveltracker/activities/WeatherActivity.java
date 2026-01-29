@@ -472,6 +472,7 @@ public class WeatherActivity extends AppCompatActivity {
             case "昆明": return "Kunming";
             case "兰州": return "Lanzhou";
             case "太原": return "Taiyuan";
+            case "长治": return "Changzhi";
             case "合肥": return "Hefei";
             case "南宁": return "Nanning";
             case "银川": return "Yinchuan";
