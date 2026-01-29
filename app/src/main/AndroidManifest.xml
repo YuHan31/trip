@@ -13,8 +13,12 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
+        android:name=".TravelTrackerApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -22,6 +26,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+
+        <!-- 高德地图API Key -->
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="c25c6b3aa4f2e8610dd54ada0925c108" />
 
         <!-- Splash Activity - 必须设置exported="true"因为它是启动Activity -->
         <activity
@@ -78,6 +87,12 @@
         <activity
             android:name=".activities.TravelTrackActivity"
             android:label="旅行痕迹"
+            android:exported="false" />
+
+        <!-- 城市选择Activity -->
+        <activity
+            android:name=".activities.CitySelectionActivity"
+            android:label="选择城市"
             android:exported="false" />
 
         <!-- 编辑个人资料Activity -->
