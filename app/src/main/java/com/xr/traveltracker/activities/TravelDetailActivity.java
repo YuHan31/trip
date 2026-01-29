@@ -3,6 +3,7 @@ package com.xr.traveltracker.activities;
 import android.graphics.drawable.Drawable;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -39,6 +40,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class TravelDetailActivity extends AppCompatActivity {
 
+    private static final String TAG = "TravelDetailActivity";
     private String token;
     private int travelId;
 
@@ -125,10 +127,12 @@ public class TravelDetailActivity extends AppCompatActivity {
         // 加载并显示媒体
         List<TravelMedia> mediaList = record.getMedia();
         if (mediaList == null || mediaList.isEmpty()) {
+            Log.d(TAG, "没有媒体文件");
             findViewById(R.id.media_container).setVisibility(View.GONE);
             return;
         }
 
+        Log.d(TAG, "找到 " + mediaList.size() + " 个媒体文件");
         mediaContainer.removeAllViews(); // 清除现有视图
 
         for (TravelMedia media : mediaList) {
@@ -149,8 +153,26 @@ public class TravelDetailActivity extends AppCompatActivity {
             imageView.setAdjustViewBounds(true);
 
             // 使用Glide加载图片
+            // 构建完整的图片URL
+            String imageUrl = media.getMediaUrl();
+            Log.d(TAG, "原始图片URL: " + imageUrl);
+
+            if (imageUrl != null && !imageUrl.startsWith("http")) {
+                // 如果是相对路径，拼接base URL
+                String baseUrl = getString(R.string.base_url);
+                // 确保baseUrl以/结尾，imageUrl不以/开头，或者相反
+                if (baseUrl.endsWith("/") && imageUrl.startsWith("/")) {
+                    imageUrl = baseUrl + imageUrl.substring(1);
+                } else if (!baseUrl.endsWith("/") && !imageUrl.startsWith("/")) {
+                    imageUrl = baseUrl + "/" + imageUrl;
+                } else {
+                    imageUrl = baseUrl + imageUrl;
+                }
+                Log.d(TAG, "拼接后的完整URL: " + imageUrl);
+            }
+
             Glide.with(this)
-                    .load(media.getMediaUrl())
+                    .load(imageUrl)
                     .placeholder(R.drawable.placeholder_image)
                     .error(R.drawable.error_image)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -158,6 +180,7 @@ public class TravelDetailActivity extends AppCompatActivity {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model,
                                                     Target<Drawable> target, boolean isFirstResource) {
+                            Log.e(TAG, "图片加载失败: " + model, e);
                             return false;
                         }
 
@@ -165,6 +188,7 @@ public class TravelDetailActivity extends AppCompatActivity {
                         public boolean onResourceReady(Drawable resource, Object model,
                                                        Target<Drawable> target, DataSource dataSource,
                                                        boolean isFirstResource) {
+                            Log.d(TAG, "图片加载成功: " + model + ", 数据源: " + dataSource);
                             return false;
                         }
                     })
