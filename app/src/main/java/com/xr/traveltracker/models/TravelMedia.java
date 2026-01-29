@@ -12,7 +12,31 @@ public class TravelMedia implements Parcelable {
     private String caption;
     private int displayOrder;
 
-    // 构造函数、Parcelable实现、getter/setter等
+    // 添加默认构造函数
+    public TravelMedia() {
+    }
+
+    // 添加常用构造函数
+    public TravelMedia(int mediaId, int travelId, String mediaType, String mediaUrl) {
+        this.mediaId = mediaId;
+        this.travelId = travelId;
+        this.mediaType = mediaType;
+        this.mediaUrl = mediaUrl;
+    }
+
+    // 添加全参构造函数
+    public TravelMedia(int mediaId, int travelId, String mediaType, String mediaUrl,
+                       String thumbnailUrl, String caption, int displayOrder) {
+        this.mediaId = mediaId;
+        this.travelId = travelId;
+        this.mediaType = mediaType;
+        this.mediaUrl = mediaUrl;
+        this.thumbnailUrl = thumbnailUrl;
+        this.caption = caption;
+        this.displayOrder = displayOrder;
+    }
+
+    // 保留原有的 Parcelable 构造函数
     protected TravelMedia(Parcel in) {
         mediaId = in.readInt();
         travelId = in.readInt();
